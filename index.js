@@ -35,8 +35,12 @@
 		},
 		_done: function() {
 			var err
-			, count = tests.reduce(function(sum, x){ return sum + x.cases.length }, 0)
+			, count = 0
 			, failed = 0
+
+			for (var test, i = 0; test = tests[i++]; ) {
+				count += test.cases.length
+			}
 
 			console.log("TAP version 13")
 			console.log("1.." + count)
@@ -86,7 +90,7 @@
 			return this.failed.length
 		}
 	}
-	exports = module.exports = describe.describe = describe
+	module.exports = describe.describe = describe
 
 }(this)
 

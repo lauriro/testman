@@ -5,6 +5,8 @@
 [4]: https://coveralls.io/r/lauriro/testman
 [5]: https://nodei.co/npm/testman.png
 [6]: https://nodei.co/npm/testman/
+[7]: https://ci.testling.com/lauriro/testman.png
+[8]: https://ci.testling.com/lauriro/testman
 
 
 
@@ -13,6 +15,7 @@ Testman - [![Build][1]][2] [![Coverage][3]][4]
 =======
 
 [![NPM][5]][6]
+[![browser support][7]][8]
 
 Expiremental testing helper.
 
