@@ -9,6 +9,7 @@ describe ( "Testman" ).
 		ok(true, "true is ok").
 		ok(1, "one is ok").
 		ok("s", "string is ok").
+describe ( "Another component" ).
 done()
 
 

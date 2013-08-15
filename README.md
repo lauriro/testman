@@ -1,20 +1,18 @@
 
-[nodei-img]: https://nodei.co/npm/testman.png
-[nodei-url]: https://nodei.co/npm/testman/
-[travis-img]: https://secure.travis-ci.org/lauriro/testman.png
-[travis-url]: https://travis-ci.org/lauriro/testman
-[cover-img]: https://coveralls.io/repos/lauriro/testman/badge.png
-[cover-url]: https://coveralls.io/r/lauriro/testman
+[1]: https://secure.travis-ci.org/lauriro/testman.png
+[2]: https://travis-ci.org/lauriro/testman
+[3]: https://coveralls.io/repos/lauriro/testman/badge.png
+[4]: https://coveralls.io/r/lauriro/testman
+[5]: https://nodei.co/npm/testman.png
+[6]: https://nodei.co/npm/testman/
 
 
 
-Testman
+
+Testman - [![Build][1]][2] [![Coverage][3]][4]
 =======
 
-[![NPM][nodei-img]][nodei-url]
-[![Build Status][travis-img]][travis-url] 
-[![Coverage Status][cover-img]][cover-url]
-
+[![NPM][5]][6]
 
 Expiremental testing helper.
 
@@ -22,7 +20,6 @@ Expiremental testing helper.
 
 ```javascript
 require("testman").
-
 
 describe ( "My first module" ).
 	it ( "should pass dummy-tests" ).

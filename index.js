@@ -8,8 +8,12 @@
 		if (!(t instanceof describe)) return new describe(name)
 
 		t.name  = name
-		t.it    = t.it.bind(t)
-		t.done  = t.done.bind(t)
+		t.it    = function(name){
+			return t._it(name)
+		}
+		t.done  = function(){
+			return t._done()
+		}
 		t.cases = []
 
 		tests.push(t)
@@ -20,7 +24,7 @@
 		describe: function(name) {
 			return new describe(name)
 		},
-		it: function(name) {
+		_it: function(name) {
 			var t = this
 			, assert = new it(name)
 
@@ -29,7 +33,7 @@
 			t.cases.push( assert )
 			return assert
 		},
-		done: function() {
+		_done: function() {
 			var err
 			, count = tests.reduce(function(sum, x){ return sum + x.cases.length }, 0)
 			, failed = 0
@@ -60,9 +64,7 @@
 	}
 
 	it.prototype = {
-		fail: function(msg) {
-			this.failed.push("message: " + msg)
-		},
+		describe: describe,
 		ok: function(value, msg) {
 			this[ value ? "passed" : "failed" ].push(msg)
 			return this
@@ -82,9 +84,6 @@
 			}
 
 			return this.failed.length
-		},
-		failed: function(){
-			console.log("FAIL");
 		}
 	}
 	exports = module.exports = describe.describe = describe
