@@ -2,6 +2,12 @@
 
 !function(root) {
 	var tests = []
+	, toString = Object.prototype.toString
+
+	function type(obj) {
+		return toString.call(obj).toLowerCase().slice(8, -1)
+		//return toString.call(obj).toLowerCase().match(/\w+(?=])/)[0]
+	}
 
 	function describe(name) {
 		var t = this
@@ -34,26 +40,22 @@
 			return assert
 		},
 		_done: function() {
-			var err
+			var i, j, test, assert
 			, count = 0
 			, failed = 0
 
-			for (var test, i = 0; test = tests[i++]; ) {
+			console.log("TAP version 13")
+
+			for (i = 0; test = tests[i++]; ) {
+				console.log("# " + (test.name || "{anonymous test}") )
+				for (j = 0; assert = test.cases[j++]; ) {
+					failed += assert.result(count + j)
+				}
 				count += test.cases.length
 			}
-
-			console.log("TAP version 13")
 			console.log("1.." + count)
-
-			for (var test, assert, j, i = 0; test = tests[i++]; ) {
-				console.log("#\n# " + (test.name || "{anonymous test}") + "\n#")
-				for (j = 0; assert = test.cases[j++]; ) {
-					failed += assert.result(i + j - 1)
-				}
-			}
-			console.log("# tests " + count)
 			console.log("# pass  " + (count - failed))
-			console.log("# fail  " + failed)
+			failed && console.log("# fail  " + failed)
 		}
 	}
 
@@ -74,20 +76,22 @@
 			return this
 		},
 		equal: function(a, b, msg) {
-			this[ a === b ? "passed" : "failed" ].push(msg)
-			return this
+			return this.ok( a === b, msg )
+		},
+		type: function(thing, expected, msg) {
+			return this.ok( type(thing) === expected, msg || "type should be " + expected )
 		},
 		result: function(num) {
-			var fail = !!this.failed.length
-			console.log( (fail ? "not " : "") + "ok " + num + 
+			var fail = this.failed.length
+			console.log( (fail ? "not ok " : "ok ") + num + 
 						" - it " + this.name + 
-						" [" + (this.passed.length) + "/" + (this.passed.length+this.failed.length) + "]")
+						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]")
 			
-			if (this.failed.length) {
+			if (fail) {
 				console.log("  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---")
 			}
 
-			return this.failed.length
+			return fail
 		}
 	}
 	module.exports = describe.describe = describe

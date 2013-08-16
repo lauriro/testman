@@ -3,14 +3,30 @@
 require("../").
 
 
+describe ( "Empty description" ).
+describe ( "Description without asserts" ).
+	it ( "should work without asserts" ).
 describe ( "Testman" ).
-	it ( "should pass dummy-tests" ).
-		equal("a", "a", "a and a should be same").
+	it ( "should pass an OK tests" ).
 		ok(true, "true is ok").
 		ok(1, "one is ok").
 		ok("s", "string is ok").
-describe ( "Another component" ).
-describe ( "Another component" ).
+
+	it ( "should pass an equal tests" ).
+		equal("a", "a", "a and a should be same").
+		equal(1, 1, "a and a should be same").
+
+	it ( "should pass a type tests" ).
+		type( 1,        "number", "typeof 1 should be a number").
+		type( "1",      "string" ).
+		type( [],       "array" ).
+		type( {},       "object" ).
+		type( require,  "function" ).
+		type( /\w/,     "regexp" ).
+		type( new Date, "date",   "typeof new Date() should be a date").
+
+describe ( "Async Testman" ).
+describe ( "Testman with timers" ).
 done()
 
 

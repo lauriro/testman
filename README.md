@@ -11,11 +11,10 @@
 
 
 
-Testman - [![Build][1]][2] [![Coverage][3]][4]
+Testman &ndash; [![Build][1]][2] [![Coverage][3]][4]
 =======
 
 [![NPM][5]][6]
-[![browser support][7]][8]
 
 Expiremental testing helper.
 
@@ -32,6 +31,10 @@ describe ( "My first module" ).
 		ok("s", "string is ok").
 done()
 ```
+
+### Browser Support
+
+[![browser support][7]][8]
 
 ### Licence
 
