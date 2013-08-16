@@ -3,8 +3,35 @@
 !function(root) {
 	var tests = []
 	, toString = Object.prototype.toString
+	, bold  = '\u001b[1m'
+	, red   = '\u001b[31m'
+	, green = '\u001b[32m'
+	, reset = '\u001b[0m'
+	
+	, codes = {
+		bold: 1,
+		underline: 4,
+		reverse: 7,
+		black: 30,
+		red: 31,
+		green: 32,
+		yellow: 33,
+		blue: 34,
+		magenta: 35,
+		cyan: 36,
+		white: 37
+	}
+
 
 	function type(obj) {
+		var t = typeof obj
+		if (t == "undefined") return t
+		/*
+		* Standard clearly states that NaN is a number
+		* but it is not useful for testing.
+		*/
+		if (t == "number") return isNaN(obj) ? "nan" : t
+
 		return toString.call(obj).toLowerCase().slice(8, -1)
 		//return toString.call(obj).toLowerCase().match(/\w+(?=])/)[0]
 	}
@@ -54,8 +81,8 @@
 				count += test.cases.length
 			}
 			console.log("1.." + count)
-			console.log("# pass  " + (count - failed))
-			failed && console.log("# fail  " + failed)
+			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) + reset)
+			failed && console.log("#" + red + bold + " fail  " + failed + reset)
 		}
 	}
 
