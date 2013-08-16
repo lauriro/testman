@@ -22,12 +22,16 @@
 		white: 37
 	}
 
+	function This() {
+		return this
+	}
+
 
 	function type(obj) {
 		var t = typeof obj
 
-		if (t == "undefined" || t == "string") return t
 		if (obj === null) return "null"
+		if (t == "undefined" || t == "string") return t
 		/*
 		* Standard clearly states that NaN is a number
 		* but it is not useful for testing.
@@ -42,9 +46,9 @@
 		var t = this
 		if (!(t instanceof describe)) return new describe(name)
 
-		t.name  = name
-		t.it    = function(name){
-			return t._it(name)
+		t.name  = name || "{anonymous test}"
+		t.it    = function(name, options){
+			return t._it(name, options)
 		}
 		t.done  = function(){
 			return t._done()
@@ -55,16 +59,19 @@
 		return t
 	}
 
+	var assert_num = 1
+
 	describe.prototype = {
 		describe: function(name) {
 			return new describe(name)
 		},
-		_it: function(name) {
+		_it: function(name, options) {
 			var t = this
-			, assert = new it(name)
+			, assert = new it(name, options)
 
 			assert.it = t.it
 			assert.done = t.done
+			assert.num = assert_num++
 			t.cases.push( assert )
 			return assert
 		},
@@ -76,52 +83,75 @@
 			console.log("TAP version 13")
 
 			for (i = 0; test = tests[i++]; ) {
-				console.log("# " + (test.name || "{anonymous test}") )
+				console.log(""+test)
 				for (j = 0; assert = test.cases[j++]; ) {
-					failed += assert.result(count + j)
+					console.log(""+assert)
+					failed += assert.failed.length
 				}
 				count += test.cases.length
 			}
 			console.log("1.." + count)
 			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) + reset)
 			failed && console.log("#" + red + bold + " fail  " + failed + reset)
+			/*
+			* FAILED tests 1, 3, 6
+			* Failed 3/6 tests, 50.00% okay
+			*/
+		},
+		toString: function() {
+			return "# " + this.name
 		}
 	}
 
-	function it(name, pending){
+	function it(name, options){
 		var t = this
-		if (!(t instanceof it)) return new it(name, pending)
-		t.name = name
+		if (!(t instanceof it)) return new it(name, options)
+		t.name = name || "{anonymous assert}"
+		t.options = options || {}
 		t.hooks = []
 		t.failed = []
 		t.passed = []
+
+		if (t.options.skip) t.ok = t.equal = t.type = This
 		return t
 	}
 
 	it.prototype = {
 		describe: describe,
-		ok: function(value, msg) {
-			this[ value ? "passed" : "failed" ].push(msg)
-			return this
+		ok: function(value, options) {
+			var t = this
+			options = options || {}
+
+			if (typeof options == "string") options = { message: options }
+
+			if (typeof value == "function") value = value.call(t)
+			t[ value ? "passed" : "failed" ].push(options.message)
+			return t
 		},
-		equal: function(a, b, msg) {
-			return this.ok( a === b, msg )
+		equal: function(a, b, options) {
+			return this.ok( a === b, options )
 		},
-		type: function(thing, expected, msg) {
+		type: function(thing, expected, options) {
 			var t = type(thing)
-			return this.ok( t === expected, msg || "type should be " + expected + ", got " + t )
+			return this.ok( t === expected, options || "type should be " + expected + ", got " + t )
 		},
-		result: function(num) {
-			var fail = this.failed.length
-			console.log( (fail ? "not ok " : "ok ") + num + 
-						" - it " + this.name + 
-						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]")
-			
-			if (fail) {
-				console.log("  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---")
+		toString: function() {
+			var t = this
+			, fail = t.failed.length
+			, fail_log = ""
+			, name = t.num + " - it " + t.name
+
+			if (t.options.skip) {
+				return "ok " + name + " # skip - " + t.options.skip
 			}
 
-			return fail
+			if (fail) {
+				fail_log = "\n  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---"
+			}
+
+			return (fail ? "not ok " : "ok ") + name + 
+						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
+			
 		}
 	}
 	module.exports = describe.describe = describe

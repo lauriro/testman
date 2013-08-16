@@ -14,7 +14,9 @@ describe ( "Testman" ).
 		ok(true, "true is ok").
 		ok(1, "one is ok").
 		ok("s", "string is ok").
-
+		ok(function(){
+			return true
+		}).
 	it ( "should pass an equal tests" ).
 		equal("a", "a", "a and a should be same").
 		equal(1, 1, "a and a should be same").
@@ -36,6 +38,8 @@ describe ( "Testman" ).
 		type( true,     "boolean" ).
 		type( false,    "boolean" ).
 		type( new Date, "date",   "typeof new Date() should be a date").
+	it ( "should skip tests", { skip: "manual" } ).
+		ok(false).
 
 describe ( "Async Testman" ).
 describe ( "Testman with timers" ).
