@@ -25,7 +25,9 @@
 
 	function type(obj) {
 		var t = typeof obj
-		if (t == "undefined") return t
+
+		if (t == "undefined" || t == "string") return t
+		if (obj === null) return "null"
 		/*
 		* Standard clearly states that NaN is a number
 		* but it is not useful for testing.
@@ -106,7 +108,8 @@
 			return this.ok( a === b, msg )
 		},
 		type: function(thing, expected, msg) {
-			return this.ok( type(thing) === expected, msg || "type should be " + expected )
+			var t = type(thing)
+			return this.ok( t === expected, msg || "type should be " + expected + ", got " + t )
 		},
 		result: function(num) {
 			var fail = this.failed.length
