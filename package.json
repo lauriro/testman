@@ -1,6 +1,6 @@
 {
 	"name": "testman",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"license": "MIT",
 	"description": "Expiremental testing helper.",
 	"main": "index.js",
@@ -20,9 +20,6 @@
 		"test",
 		"tap"
 	],
-	"devDependencies": {
-		"testman": "~0.0.2"
-	},
 	"testling": {
 		"files": "tests/run.js",
 		"browsers": {

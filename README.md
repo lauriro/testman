@@ -16,7 +16,8 @@ Testman &ndash; [![Build][1]][2] [![Coverage][3]][4]
 
 [![NPM][5]][6]
 
-Expiremental testing helper.
+Expiremental testing helper 
+that produces [TAP, the Test Anything Protocol](http://testanything.org/).
 
 ### Usage
 
@@ -25,10 +26,9 @@ require("testman").
 
 describe ( "My first module" ).
 	it ( "should pass dummy-tests" ).
-		equal("a", "a", "a and a should be same").
-		ok(true, "true is ok").
-		ok(1, "one is ok").
-		ok("s", "string is ok").
+		equal ("a", "a", "a and a should be same").
+		ok (true, "true is ok").
+		type (1, "number").
 done()
 ```
 

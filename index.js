@@ -1,5 +1,16 @@
 
 
+
+/*
+* @version  0.0.5
+* @author   Lauri Rooden - https://github.com/lauriro/testman
+* @license  MIT License  - http://lauri.rooden.ee/mit-license.txt
+*/
+
+
+
+
+
 !function(root) {
 	var tests = []
 	, toString = Object.prototype.toString
