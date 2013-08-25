@@ -2,7 +2,7 @@
 
 
 /*
-* @version  0.0.5
+* @version  0.0.6
 * @author   Lauri Rooden - https://github.com/lauriro/testman
 * @license  MIT License  - http://lauri.rooden.ee/mit-license.txt
 */
@@ -49,7 +49,7 @@
 		*/
 		if (t == "number") return isNaN(obj) ? "nan" : t
 
-		return toString.call(obj).toLowerCase().slice(8, -1)
+		return toString.call(obj).slice(8, -1).toLowerCase()
 		//return toString.call(obj).toLowerCase().match(/\w+(?=])/)[0]
 	}
 
@@ -129,6 +129,10 @@
 
 	it.prototype = {
 		describe: describe,
+		run: function(fn) {
+			fn.call(this)
+			return this
+		},
 		ok: function(value, options) {
 			var t = this
 			options = options || {}
@@ -140,7 +144,7 @@
 			return t
 		},
 		equal: function(a, b, options) {
-			return this.ok( a === b, options )
+			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
 		},
 		type: function(thing, expected, options) {
 			var t = type(thing)
