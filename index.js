@@ -2,7 +2,7 @@
 
 
 /*
-* @version  0.0.6
+* @version  0.0.7
 * @author   Lauri Rooden - https://github.com/lauriro/testman
 * @license  MIT License  - http://lauri.rooden.ee/mit-license.txt
 */
@@ -62,7 +62,9 @@
 			return t._it(name, options)
 		}
 		t.done  = function(){
-			return t._done()
+			setTimeout(function(){
+				t._done()
+			}, 1)
 		}
 		t.cases = []
 
