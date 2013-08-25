@@ -2,7 +2,7 @@
 
 
 /*
-* @version  0.0.7
+* @version  0.0.8
 * @author   Lauri Rooden - https://github.com/lauriro/testman
 * @license  MIT License  - http://lauri.rooden.ee/mit-license.txt
 */
@@ -142,7 +142,7 @@
 			if (typeof options == "string") options = { message: options }
 
 			if (typeof value == "function") value = value.call(t)
-			t[ value ? "passed" : "failed" ].push(options.message)
+			t[ value ? "passed" : "failed" ].push(options.message + " #" + (t.passed.length+t.failed.length+1))
 			return t
 		},
 		equal: function(a, b, options) {
