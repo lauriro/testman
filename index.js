@@ -37,20 +37,67 @@
 		return this
 	}
 
+	/*
+
+	var tick = root.process && root.process.nextTick || setTimeout
+
+	function Async(fn) {
+		var t = this
+		t.pending = 0
+		t.cb = function() {
+			tick(function(){--t.pending==0&&fn()}, 0)
+		}
+	}
+
+	Async.prototype.wait = function(next) {
+		var t = this
+		t.pending++
+		return next ? 
+			function() {
+				next.apply(this, arguments)
+				t.cb()
+			} :
+			t.cb
+	}
+	*/
+
+	function Lazy() {
+		var k
+		, t = this
+		, hooks = []
+		, hooked = []
+		, a = arguments
+
+		for (var i = a.length; i--; ) !function(k) {
+			hooked.push([k, t.hasOwnProperty(k) && t[k]])
+			t[k] = function(){hooks.push([k, arguments]);return t}
+		}(a[i])
+
+		t.resume = function() {
+			delete t.resume
+			var v
+			, i = hooked.length
+
+			while (i--) {
+				if (hooked[i][1]) t[hooked[i][0]] = hooked[i][1]
+				else delete t[hooked[i][0]]
+			}
+			// i == -1 from previous loop
+			while (v=hooks[++i]) t[v[0]].apply(t, v[1])
+			t = hooks = hooked = null
+		}
+		return t
+	}
 
 	function type(obj) {
-		var t = typeof obj
-
 		if (obj === null) return "null"
-		if (t == "undefined" || t == "string") return t
 		/*
 		* Standard clearly states that NaN is a number
 		* but it is not useful for testing.
 		*/
-		if (t == "number") return isNaN(obj) ? "nan" : t
+		if (obj !== obj) return "nan"
 
 		return toString.call(obj).slice(8, -1).toLowerCase()
-		//return toString.call(obj).toLowerCase().match(/\w+(?=])/)[0]
 	}
 
 	function describe(name) {
@@ -131,6 +178,11 @@
 
 	it.prototype = {
 		describe: describe,
+		wait: function() {
+			console.log("# wait " + this)
+			Lazy.call(this, "run", "ok", "equal", "describe", "done")
+			return this.resume
+		},
 		run: function(fn) {
 			fn.call(this)
 			return this
@@ -146,6 +198,8 @@
 			return t
 		},
 		equal: function(a, b, options) {
+			if (typeof a == "function") a = a()
+			if (typeof b == "function") b = b()
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
 		},
 		type: function(thing, expected, options) {
