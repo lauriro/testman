@@ -79,7 +79,7 @@
 				else delete t[hooked[i][0]]
 			}
 			// i == -1 from previous loop
-			for (;v=hooks[++i];) t[v[0]].apply(t, v[1])
+			for (;v=hooks[++i];) t = t[v[0]].apply(t, v[1])
 			t = hooks = hooked = null
 		}
 		return t
