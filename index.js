@@ -19,6 +19,13 @@
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
 	
+	function This() {
+		return this
+	}
+
+	/*
+
+	var tick = root.process && root.process.nextTick || setTimeout
 	, codes = {
 		bold: 1,
 		underline: 4,
@@ -33,13 +40,6 @@
 		white: 37
 	}
 
-	function This() {
-		return this
-	}
-
-	/*
-
-	var tick = root.process && root.process.nextTick || setTimeout
 
 	function Async(fn) {
 		var t = this
@@ -62,28 +62,24 @@
 	*/
 
 	function Lazy() {
-		var k
-		, t = this
+		var t = this
 		, hooks = []
 		, hooked = []
-		, a = arguments
 
-		for (var i = a.length; i--; ) !function(k) {
+		for (var a = arguments, i = a.length; i--; ) !function(k) {
 			hooked.push([k, t.hasOwnProperty(k) && t[k]])
 			t[k] = function(){hooks.push([k, arguments]);return t}
 		}(a[i])
 
 		t.resume = function() {
 			delete t.resume
-			var v
-			, i = hooked.length
 
-			while (i--) {
+			for (var v, i = hooked.length;i--;) {
 				if (hooked[i][1]) t[hooked[i][0]] = hooked[i][1]
 				else delete t[hooked[i][0]]
 			}
 			// i == -1 from previous loop
-			while (v=hooks[++i]) t[v[0]].apply(t, v[1])
+			for (;v=hooks[++i];) t[v[0]].apply(t, v[1])
 			t = hooks = hooked = null
 		}
 		return t
@@ -139,6 +135,7 @@
 			var i, j, test, assert
 			, count = 0
 			, failed = 0
+			, failed_asserts = 0
 
 			console.log("TAP version 13")
 
@@ -146,7 +143,8 @@
 				console.log(""+test)
 				for (j = 0; assert = test.cases[j++]; ) {
 					console.log(""+assert)
-					failed += assert.failed.length
+					if (assert.failed.length) failed++
+					failed_asserts += assert.failed.length
 				}
 				count += test.cases.length
 			}
@@ -179,8 +177,7 @@
 	it.prototype = {
 		describe: describe,
 		wait: function() {
-			console.log("# wait " + this)
-			Lazy.call(this, "run", "ok", "equal", "describe", "done")
+			Lazy.call(this, "it", "wait", "run", "ok", "equal", "describe", "done")
 			return this.resume
 		},
 		run: function(fn) {
@@ -230,4 +227,7 @@
 }(this)
 
 
+/*
+* http://sourceforge.net/projects/portableapps/files/
+*/
 
