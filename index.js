@@ -12,7 +12,8 @@
 
 
 !function(root) {
-	var tests = []
+	var undef
+	, tests = []
 	, toString = Object.prototype.toString
 	, bold  = '\u001b[1m'
 	, red   = '\u001b[31m'
@@ -87,6 +88,7 @@
 
 	function type(obj) {
 		if (obj === null) return "null"
+		if (obj === undef) return "undefined"
 		/*
 		* Standard clearly states that NaN is a number
 		* but it is not useful for testing.
