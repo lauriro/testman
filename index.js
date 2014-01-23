@@ -2,7 +2,7 @@
 
 
 /*
-* @version    0.1.0
+* @version    0.1.1
 * @date       2014-01-23
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
@@ -99,10 +99,13 @@
 	}
 
 	console.log("TAP version 13")
+	var started;
 
 	function describe(name) {
 		var t = this
 		if (!(t instanceof describe)) return new describe(name)
+
+		if (!started) started = +new Date()
 
 		t.name  = name || "{anonymous test}"
 		t.it    = function(name, options){
@@ -147,6 +150,7 @@
 			, count = 0
 			, failed = 0
 			, failed_asserts = 0
+			, ended = +new Date()
 
 			for (i = 0; test = tests[i++]; ) {
 				for (j = 0; assert = test.cases[j++]; ) {
@@ -157,6 +161,7 @@
 			}
 			console.log("1.." + count)
 			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) + reset)
+			console.log("# executed in " + (ended - started) + " ms")
 			failed && console.log("#" + red + bold + " fail  " + failed + reset)
 			/*
 			* FAILED tests 1, 3, 6
