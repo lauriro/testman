@@ -1,37 +1,81 @@
 {
-	"name": "testman",
-	"version": "0.0.11",
-	"license": "MIT",
-	"description": "Expiremental testing helper.",
-	"main": "index.js",
-	"author": "Lauri Rooden <lauri@rooden.ee>",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/lauriro/testman.git"
-	},
-	"bugs": {
-		"url": "https://github.com/lauriro/testman/issues"
-	},
-	"scripts": {
-		"travis-test": "istanbul cover ./tests/run.js && (coveralls < coverage/lcov.info || exit 0)",
-		"test": "node tests/run.js"
-	},
-	"keywords": [
-		"test",
-		"tap"
-	],
-	"testling": {
-		"files": "tests/run.js",
-		"browsers": {
-			"ie": [ 6, 7, 8, 9, 10 ],
-			"ff": [ 3, 3.6, 4, 18, 19, "nightly" ],
-			"chrome": [ 4, 10, 20, 24, 25, "canary" ],
-			"safari": [ 5.1, 6 ],
-			"opera": [ 10, 11, "11.6", 12, "next" ],
-			"android-browser": [ 4.2 ],
-			"iphone": [ 6 ],
-			"ipad": [ 6 ]
-		}
-	},
-	"readmeFilename": "README.md"
+  "name": "testman",
+  "version": "0.1.0",
+  "stability": 2,
+  "license": "MIT",
+  "author": "Lauri Rooden <lauri@rooden.ee>",
+  "description": "Expiremental testing helper.",
+  "keywords": [
+    "test",
+    "tap"
+  ],
+  "main": "index.js",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "build": "node node_modules/buildman/index.js --all",
+    "travis-test": "istanbul cover ./tests/run.js && (coveralls < coverage/lcov.info || exit 0)",
+    "test": "node tests/run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lauriro/testman.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lauriro/testman/issues"
+  },
+  "devDependencies": {
+    "buildman": "*"
+  },
+  "buildman": {
+    "min.js": "index.js"
+  },
+  "testling": {
+    "files": "tests/run.js",
+    "browsers": {
+      "ie": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "ff": [
+        3,
+        4,
+        5,
+        20,
+        25,
+        "nightly"
+      ],
+      "chrome": [
+        4,
+        10,
+        20,
+        30,
+        31,
+        "canary"
+      ],
+      "safari": [
+        4,
+        5.1,
+        6
+      ],
+      "opera": [
+        10,
+        11,
+        "11.6",
+        12,
+        "next"
+      ],
+      "android-browser": [
+        4.2
+      ],
+      "iphone": [
+        6
+      ],
+      "ipad": [
+        6
+      ]
+    }
+  }
 }

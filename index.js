@@ -2,12 +2,12 @@
 
 
 /*
-* @version  0.0.8
-* @author   Lauri Rooden - https://github.com/lauriro/testman
-* @license  MIT License  - http://lauri.rooden.ee/mit-license.txt
+* @version    0.1.0
+* @date       2014-01-23
+* @stability  2 - Unstable
+* @author     Lauri Rooden <lauri@rooden.ee>
+* @license    MIT License
 */
-
-
 
 
 
@@ -96,6 +96,8 @@
 		return toString.call(obj).slice(8, -1).toLowerCase()
 	}
 
+	console.log("TAP version 13")
+
 	function describe(name) {
 		var t = this
 		if (!(t instanceof describe)) return new describe(name)
@@ -111,6 +113,7 @@
 		}
 		t.cases = []
 
+		console.log("# "+t.name)
 		tests.push(t)
 		return t
 	}
@@ -125,8 +128,14 @@
 			var t = this
 			, assert = new it(name, options)
 
-			assert.it = t.it
-			assert.done = t.done
+			assert.it = function(){
+				assert.end()
+				return t.it.apply(t, arguments)
+			}
+			assert.done = function(){
+				assert.end()
+				return t.done.apply(t, arguments)
+			}
 			assert.num = assert_num++
 			t.cases.push( assert )
 			return assert
@@ -137,12 +146,8 @@
 			, failed = 0
 			, failed_asserts = 0
 
-			console.log("TAP version 13")
-
 			for (i = 0; test = tests[i++]; ) {
-				console.log(""+test)
 				for (j = 0; assert = test.cases[j++]; ) {
-					console.log(""+assert)
 					if (assert.failed.length) failed++
 					failed_asserts += assert.failed.length
 				}
@@ -154,10 +159,8 @@
 			/*
 			* FAILED tests 1, 3, 6
 			* Failed 3/6 tests, 50.00% okay
+			* PASS 1 test executed in 0.023s, 1 passed, 0 failed, 0 dubious, 0 skipped.
 			*/
-		},
-		toString: function() {
-			return "# " + this.name
 		}
 	}
 
@@ -175,7 +178,13 @@
 	}
 
 	it.prototype = {
-		describe: describe,
+		describe: function(){
+			this.end()
+			return describe.apply(this, arguments)
+		},
+		end: function(){
+			console.log(""+this)
+		},
 		wait: function() {
 			Lazy.call(this, "it", "wait", "run", "ok", "equal", "describe", "done")
 			return this.resume

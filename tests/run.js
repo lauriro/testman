@@ -50,6 +50,15 @@ describe ( "Testman" ).
 		ok(false).
 
 describe ( "Async Testman" ).
+	it ( "should wait" ).
+		run(function(){
+			this._ts = +new Date()
+			setTimeout(this.wait(), 50)
+		}).
+		ok(function(){
+			return (+new Date() - this._ts) >= 50
+		}).
+
 describe ( "Testman with timers" ).
 done()
 

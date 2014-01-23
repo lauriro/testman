@@ -3,18 +3,20 @@
 [2]: https://travis-ci.org/lauriro/testman
 [3]: https://coveralls.io/repos/lauriro/testman/badge.png
 [4]: https://coveralls.io/r/lauriro/testman
-[5]: https://nodei.co/npm/testman.png
-[6]: https://nodei.co/npm/testman/
 [7]: https://ci.testling.com/lauriro/testman.png
 [8]: https://ci.testling.com/lauriro/testman
+[npm-package]: https://npmjs.org/package/testman
 
+
+
+    @version    0.1.0
+    @date       2014-01-23
+    @stability  2 - Unstable
 
 
 
 Testman &ndash; [![Build][1]][2] [![Coverage][3]][4]
 =======
-
-[![NPM][5]][6]
 
 Expiremental testing helper 
 that produces [TAP, the Test Anything Protocol](http://testanything.org/).
@@ -32,9 +34,20 @@ describe ( "My first module" ).
 done()
 ```
 
-### Browser Support
+
+
+Browser Support
+---------------
 
 [![browser support][7]][8]
+
+
+
+External links
+--------------
+
+-   [npm-package][]
+
 
 ### Licence
 
