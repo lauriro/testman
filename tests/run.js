@@ -53,10 +53,13 @@ describe ( "Async Testman" ).
 	it ( "should wait" ).
 		run(function(){
 			this._ts = +new Date()
-			setTimeout(this.wait(), 50)
+			setTimeout(this.wait(), 52)
 		}).
 		ok(function(){
-			return (+new Date() - this._ts) >= 50
+			var ts = +new Date()
+			, diff = ts - this._ts
+			console.log("# ts:"+ts+" diff:"+diff+" _ts:"+this._ts)
+			return diff > 50
 		}).
 
 describe ( "Testman with timers" ).
