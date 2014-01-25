@@ -2,8 +2,8 @@
 
 
 /*
-* @version    0.1.1
-* @date       2014-01-23
+* @version    0.1.2
+* @date       2014-01-25
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
 * @license    MIT License
@@ -101,6 +101,9 @@
 	console.log("TAP version 13")
 	var started;
 
+	var just_one = parseInt(process.argv[2]) || false
+	var just_two = parseInt(process.argv[3]) || false
+
 	function describe(name) {
 		var t = this
 		if (!(t instanceof describe)) return new describe(name)
@@ -120,6 +123,11 @@
 
 		console.log("# "+t.name)
 		tests.push(t)
+
+		if (just_one && tests.length != just_one) {
+			console.log("# skip ", just_one, tests.length)
+			t.it = t.ok = t.equal = t.type = t.run = This
+		}
 		return t
 	}
 
@@ -131,7 +139,7 @@
 		},
 		_it: function(name, options) {
 			var t = this
-			, assert = new it(name, options)
+			, assert = new it(name, options, assert_num)
 
 			assert.it = function(){
 				assert.end()
@@ -171,7 +179,7 @@
 		}
 	}
 
-	function it(name, options){
+	function it(name, options, num){
 		var t = this
 		if (!(t instanceof it)) return new it(name, options)
 		t.name = name || "{anonymous assert}"
@@ -180,7 +188,10 @@
 		t.failed = []
 		t.passed = []
 
-		if (t.options.skip) t.ok = t.equal = t.type = This
+		if (just_two && num != just_two) t.options.skip = "by argv"
+		if (t.options.skip) {
+			t.ok = t.equal = t.type = t.run = This
+		}
 		return t
 	}
 
