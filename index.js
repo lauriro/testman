@@ -2,8 +2,8 @@
 
 
 /*
-* @version    0.1.2
-* @date       2014-01-25
+* @version    0.1.3
+* @date       2014-02-28
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
 * @license    MIT License
@@ -222,8 +222,8 @@
 			return t
 		},
 		equal: function(a, b, options) {
-			if (typeof a == "function") a = a()
-			if (typeof b == "function") b = b()
+			if (typeof a == "function") a = a.call(this)
+			if (typeof b == "function") b = b.call(this)
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
 		},
 		type: function(thing, expected, options) {
