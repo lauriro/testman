@@ -2,8 +2,8 @@
 
 
 /*
-* @version    0.1.3
-* @date       2014-02-28
+* @version    0.1.4
+* @date       2014-03-10
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
 * @license    MIT License
@@ -204,7 +204,7 @@
 			console.log(""+this)
 		},
 		wait: function() {
-			Lazy.call(this, "it", "wait", "run", "ok", "equal", "describe", "done")
+			Lazy.call(this, "it", "wait", "run", "ok", "equal", "anyOf", "describe", "done")
 			return this.resume
 		},
 		run: function(fn) {
@@ -225,6 +225,9 @@
 			if (typeof a == "function") a = a.call(this)
 			if (typeof b == "function") b = b.call(this)
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
+		},
+		anyOf: function(a, b, options) {
+			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
 		},
 		type: function(thing, expected, options) {
 			var t = type(thing)

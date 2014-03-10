@@ -25,6 +25,10 @@ describe ( "Testman" ).
 			function(){return true},
 			"function result should be same").
 
+	it ( "should pass an anyOf tests" ).
+		anyOf("a", ["a", "b"]).
+		anyOf("a", ["b", "a"]).
+
 	it ( "should pass a type tests" ).
 		type( 1,           "number", "typeof 1 should be a number").
 		type( Number(1),   "number" ).
