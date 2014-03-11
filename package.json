@@ -1,6 +1,6 @@
 {
   "name": "testman",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "stability": 2,
   "license": "MIT",
   "author": "Lauri Rooden <lauri@rooden.ee>",
@@ -24,7 +24,8 @@
     "url": "https://github.com/lauriro/testman/issues"
   },
   "devDependencies": {
-    "buildman": "*"
+    "buildman": "*",
+    "browser-upgrade-lite": "*"
   },
   "buildman": {
     "min.js": "index.js"

@@ -2,7 +2,7 @@
 
 
 /*
-* @version    0.1.5
+* @version    0.1.6
 * @date       2014-03-11
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
@@ -227,7 +227,7 @@
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
 		},
 		anyOf: function(a, b, options) {
-			return this.ok( b && b.indexOf && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
+			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
 		},
 		type: function(thing, expected, options) {
 			var t = type(thing)
