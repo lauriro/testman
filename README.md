@@ -9,8 +9,8 @@
 
 
 
-    @version    0.1.4
-    @date       2014-03-10
+    @version    0.1.5
+    @date       2014-03-11
     @stability  2 - Unstable
 
 
@@ -31,6 +31,7 @@ describe ( "My first module" ).
 		equal ("a", "a", "a and a should be same").
 		ok (true, "true is ok").
 		type (1, "number").
+        anyOf("a", ["a", "A"]).
 done()
 ```
 
