@@ -2,8 +2,8 @@
 
 
 /*
-* @version    0.1.6
-* @date       2014-03-11
+* @version    0.1.7
+* @date       2014-05-20
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
 * @license    MIT License
@@ -19,7 +19,7 @@
 	, red   = '\u001b[31m'
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
-	
+
 	function This() {
 		return this
 	}
@@ -157,6 +157,7 @@
 			var i, j, test, assert
 			, count = 0
 			, failed = 0
+			, passed_asserts = 0
 			, failed_asserts = 0
 			, ended = +new Date()
 
@@ -164,18 +165,26 @@
 				for (j = 0; assert = test.cases[j++]; ) {
 					if (assert.failed.length) failed++
 					failed_asserts += assert.failed.length
+					passed_asserts += assert.passed.length
 				}
 				count += test.cases.length
 			}
 			console.log("1.." + count)
-			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) + reset)
-			console.log("# executed in " + (ended - started) + " ms")
-			failed && console.log("#" + red + bold + " fail  " + failed + reset)
+			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) 
+				+ "/" + count
+				+ " [" + passed_asserts + "/" +(passed_asserts + failed_asserts)+ "]"
+				+ " in " + (ended - started) + " ms"
+				+ reset)
+
+			failed && console.log("#" + red + bold + " fail  " + failed
+				+ " [" +failed_asserts+ "]"
+				+ reset)
 			/*
 			* FAILED tests 1, 3, 6
 			* Failed 3/6 tests, 50.00% okay
 			* PASS 1 test executed in 0.023s, 1 passed, 0 failed, 0 dubious, 0 skipped.
 			*/
+			if (typeof process != "undefined") process.exit()
 		}
 	}
 
@@ -195,7 +204,7 @@
 		return t
 	}
 
-	it.prototype = {
+	it.prototype = describe.asserts = {
 		describe: function(){
 			this.end()
 			return describe.apply(this, arguments)
@@ -249,7 +258,7 @@
 
 			return (fail ? "not ok " : "ok ") + name + 
 						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
-			
+
 		}
 	}
 	module.exports = describe.describe = describe
