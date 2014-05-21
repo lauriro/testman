@@ -2,8 +2,8 @@
 
 
 /*
-* @version    0.1.7
-* @date       2014-05-20
+* @version    0.1.8
+* @date       2014-05-21
 * @stability  2 - Unstable
 * @author     Lauri Rooden <lauri@rooden.ee>
 * @license    MIT License
@@ -184,7 +184,7 @@
 			* Failed 3/6 tests, 50.00% okay
 			* PASS 1 test executed in 0.023s, 1 passed, 0 failed, 0 dubious, 0 skipped.
 			*/
-			if (typeof process != "undefined") process.exit()
+			if (typeof process != "undefined" && process.exit) process.exit()
 		}
 	}
 
