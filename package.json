@@ -1,6 +1,6 @@
 {
   "name": "testman",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "stability": 2,
   "license": "MIT",
   "author": "Lauri Rooden <lauri@rooden.ee>",
@@ -12,23 +12,13 @@
   "main": "index.js",
   "readmeFilename": "README.md",
   "scripts": {
-    "build": "node node_modules/buildman/index.js --all",
+    "build": "node ../buildman/index.js --all",
     "travis-test": "istanbul cover ./tests/run.js && (coveralls < coverage/lcov.info || exit 0)",
     "test": "node tests/run.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/lauriro/testman.git"
-  },
+  "repository": "git://github.com/lauriro/testman.git",
   "bugs": {
     "url": "https://github.com/lauriro/testman/issues"
-  },
-  "devDependencies": {
-    "buildman": "*",
-    "browser-upgrade-lite": "*"
-  },
-  "buildman": {
-    "min.js": "index.js"
   },
   "testling": {
     "files": "tests/run.js",
