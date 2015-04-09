@@ -26,6 +26,12 @@ describe ( "Testman" ).
 			function(){return true},
 			"function result should be same").
 
+	it ( "should pass a deepEqual tests" ).
+		deepEqual("a", "a", "a and a should be same").
+		deepEqual(1, 1, "1 and 1 should be same").
+		deepEqual([1, "2", 3], [1, "2", 3]).
+		deepEqual({a: "A", b: "b"}, {a: "A", b: "b"}).
+
 	it ( "should pass an anyOf tests" ).
 		anyOf("a", ["a", "b"]).
 		anyOf("a", ["b", "a"]).

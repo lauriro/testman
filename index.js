@@ -235,6 +235,11 @@
 			if (typeof b == "function") b = b.call(this)
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
 		},
+		deepEqual: function(actual, expected, opts) {
+			actual = JSON.stringify(actual)
+			expected = JSON.stringify(expected)
+			return this.ok( actual === expected, opts || "Expected: "+expected+" Got: "+actual )
+		},
 		anyOf: function(a, b, options) {
 			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
 		},
