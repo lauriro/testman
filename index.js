@@ -19,6 +19,11 @@
 	, red   = '\u001b[31m'
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
+	, proc = typeof process == "undefined" ? { argv: [] } : process
+
+	if (!proc.stdout || !proc.stdout.isTTY || proc.argv.indexOf('--no-color') != -1) {
+		bold = red = green = reset = ""
+	}
 
 	function This() {
 		return this
@@ -101,8 +106,8 @@
 	console.log("TAP version 13")
 	var started;
 
-	var just_one = parseInt(process.argv[2]) || false
-	var just_two = parseInt(process.argv[3]) || false
+	var just_one = parseInt(proc.argv[2]) || false
+	var just_two = parseInt(proc.argv[3]) || false
 
 	function describe(name) {
 		var t = this
