@@ -30,43 +30,6 @@
 		return this
 	}
 
-	/*
-
-	var tick = root.process && root.process.nextTick || setTimeout
-	, codes = {
-		bold: 1,
-		underline: 4,
-		reverse: 7,
-		black: 30,
-		red: 31,
-		green: 32,
-		yellow: 33,
-		blue: 34,
-		magenta: 35,
-		cyan: 36,
-		white: 37
-	}
-
-
-	function Async(fn) {
-		var t = this
-		t.pending = 0
-		t.cb = function() {
-			tick(function(){--t.pending==0&&fn()}, 0)
-		}
-	}
-
-	Async.prototype.wait = function(next) {
-		var t = this
-		t.pending++
-		return next ? 
-			function() {
-				next.apply(this, arguments)
-				t.cb()
-			} :
-			t.cb
-	}
-	*/
 	function type(obj) {
 		if (obj === null) return "null"
 		if (obj === undef) return "undefined"
