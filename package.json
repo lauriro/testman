@@ -11,6 +11,9 @@
   ],
   "main": "index.js",
   "readmeFilename": "README.md",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "build": "node ../buildman/index.js --all",
     "travis-test": "istanbul cover ./tests/run.js && (coveralls < coverage/lcov.info || exit 0)",
