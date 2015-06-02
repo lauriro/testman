@@ -1,5 +1,4 @@
 var undef;
-var mod = require("browser-upgrade-lite");
 
 
 require("../").

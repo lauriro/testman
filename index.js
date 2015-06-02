@@ -11,7 +11,7 @@
 
 
 
-!function(root) {
+!function(exports) {
 	var undef
 	, tests = []
 	, toString = Object.prototype.toString
@@ -20,6 +20,7 @@
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
+	, Fn = exports.Fn || require("functional-lite").Fn
 
 	if (!proc.stdout || !proc.stdout.isTTY || proc.argv.indexOf('--no-color') != -1) {
 		bold = red = green = reset = ""
@@ -66,31 +67,6 @@
 			t.cb
 	}
 	*/
-
-	function Lazy() {
-		var t = this
-		, hooks = []
-		, hooked = []
-
-		for (var a = arguments, i = a.length; i--; ) !function(k) {
-			hooked.push([k, t.hasOwnProperty(k) && t[k]])
-			t[k] = function(){hooks.push([k, arguments]);return t}
-		}(a[i])
-
-		t.resume = function() {
-			delete t.resume
-
-			for (var v, i = hooked.length;i--;) {
-				if (hooked[i][1]) t[hooked[i][0]] = hooked[i][1]
-				else delete t[hooked[i][0]]
-			}
-			// i == -1 from previous loop
-			for (;v=hooks[++i];) t = t[v[0]].apply(t, v[1])
-			t = hooks = hooked = null
-		}
-		return t
-	}
-
 	function type(obj) {
 		if (obj === null) return "null"
 		if (obj === undef) return "undefined"
@@ -210,16 +186,13 @@
 	}
 
 	it.prototype = describe.asserts = {
-		describe: function(){
+		wait: Fn.hold,
+		describe: function() {
 			this.end()
 			return describe.apply(this, arguments)
 		},
-		end: function(){
-			console.log(""+this)
-		},
-		wait: function() {
-			Lazy.call(this, "it", "wait", "run", "ok", "equal", "anyOf", "describe", "done")
-			return this.resume
+		end: function() {
+			console.log(this.toString())
 		},
 		run: function(fn) {
 			fn.call(this)
@@ -271,7 +244,8 @@
 
 		}
 	}
-	module.exports = describe.describe = describe
+	exports.describe = describe.describe = describe
+	describe.it = it.prototype
 
 }(this)
 
