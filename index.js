@@ -21,9 +21,14 @@
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("functional-lite").Fn
+	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
 
-	if (!proc.stdout || !proc.stdout.isTTY || proc.argv.indexOf('--no-color') != -1) {
+	if (!color) {
 		bold = red = green = reset = ""
+	}
+
+	function print(str) {
+		console.log(str)
 	}
 
 	function This() {
@@ -42,7 +47,7 @@
 		return toString.call(obj).slice(8, -1).toLowerCase()
 	}
 
-	console.log("TAP version 13")
+	print("TAP version 13")
 	var started;
 
 	var just_one = parseInt(proc.argv[2]) || false
@@ -65,11 +70,11 @@
 		}
 		t.cases = []
 
-		console.log("# "+t.name)
+		print("# " + t.name)
 		tests.push(t)
 
 		if (just_one && tests.length != just_one) {
-			console.log("# skip ", just_one, tests.length)
+			print("# skip " + just_one + " " + tests.length)
 			t.it = t.ok = t.equal = t.type = t.run = This
 		}
 		return t
@@ -113,14 +118,14 @@
 				}
 				count += test.cases.length
 			}
-			console.log("1.." + count)
-			console.log("#" + (failed ? "" : green + bold) + " pass  " + (count - failed) 
+			print("1.." + count)
+			print("#" + (failed ? "" : green + bold) + " pass  " + (count - failed)
 				+ "/" + count
 				+ " [" + passed_asserts + "/" +(passed_asserts + failed_asserts)+ "]"
 				+ " in " + (ended - started) + " ms"
 				+ reset)
 
-			failed && console.log("#" + red + bold + " fail  " + failed
+			failed && print("#" + red + bold + " fail  " + failed
 				+ " [" +failed_asserts+ "]"
 				+ reset)
 			/*
@@ -155,7 +160,7 @@
 			return describe.apply(this, arguments)
 		},
 		end: function() {
-			console.log(this.toString())
+			print(this.toString())
 		},
 		run: function(fn) {
 			fn.call(this)
@@ -202,7 +207,7 @@
 				fail_log = "\n  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---"
 			}
 
-			return (fail ? "not ok " : "ok ") + name + 
+			return (fail ? "not ok " : "ok ") + name +
 						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
 
 		}
