@@ -39,7 +39,7 @@ describe ( "Testman" ).
 		type( 1,           "number", "typeof 1 should be a number").
 		type( Number(1),   "number" ).
 		type( Number("1"), "number" ).
-		type( NaN,         "nan" ).
+		type( NaN,         "NaN" ).
 		type( "1",         "string" ).
 		type( String("1"), "string" ).
 		type( String(1),   "string" ).

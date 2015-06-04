@@ -12,8 +12,7 @@
 
 
 !function(exports) {
-	var undef
-	, tests = []
+	var tests = []
 	, toString = Object.prototype.toString
 	, bold  = '\u001b[1m'
 	, red   = '\u001b[31m'
@@ -36,13 +35,9 @@
 	}
 
 	function type(obj) {
-		if (obj === null) return "null"
-		if (obj === undef) return "undefined"
-		/*
-		* Standard clearly states that NaN is a number
-		* but it is not useful for testing.
-		*/
-		if (obj !== obj) return "nan"
+		// Standard clearly states that NaN is a number
+		// but it is not useful for testing.
+		if (obj == null || obj != obj) return "" + obj
 
 		return toString.call(obj).slice(8, -1).toLowerCase()
 	}
