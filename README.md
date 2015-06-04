@@ -3,10 +3,8 @@
 [2]: https://travis-ci.org/lauriro/testman
 [3]: https://coveralls.io/repos/lauriro/testman/badge.png
 [4]: https://coveralls.io/r/lauriro/testman
-[7]: https://ci.testling.com/lauriro/testman.png
-[8]: https://ci.testling.com/lauriro/testman
 [npm-package]: https://npmjs.org/package/testman
-
+[GitHub repo]: https://github.com/litejs/testman
 
 
     @version    0.2.0
@@ -14,11 +12,10 @@
     @stability  2 - Unstable
 
 
-
 Testman &ndash; [![Build][1]][2] [![Coverage][3]][4]
 =======
 
-Expiremental testing helper 
+Expiremental testing helper
 that produces [TAP, the Test Anything Protocol](http://testanything.org/).
 
 ### Usage
@@ -37,17 +34,11 @@ done()
 
 
 
-Browser Support
----------------
-
-[![browser support][7]][8]
-
-
-
 External links
 --------------
 
--   [npm-package][]
+-   [GitHub repo][]
+-   [npm package][]
 
 
 Licence
