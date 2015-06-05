@@ -55,9 +55,6 @@
 		if (!started) started = +new Date()
 
 		t.name  = name || "{anonymous test}"
-		t.it    = function(name, options){
-			return t._it(name, options)
-		}
 		t.cases = []
 
 		print("# " + t.name)
@@ -76,7 +73,7 @@
 		describe: function(name) {
 			return new describe(name)
 		},
-		_it: function(name, options) {
+		it: function(name, options) {
 			var t = this
 			, assert = new it(name, options, assert_num)
 
