@@ -77,15 +77,9 @@
 			var t = this
 			, assert = new it(name, options, assert_num)
 
-			assert.it = function(){
-				assert.end()
-				return t.it.apply(t, arguments)
-			}
-			assert.done = function(){
-				assert.end()
-				return t.done.apply(t, arguments)
-			}
+			assert.group = t
 			assert.num = assert_num++
+
 			t.cases.push( assert )
 			return assert
 		},
@@ -124,7 +118,7 @@
 		}
 	}
 
-	function it(name, options, num){
+	function it(name, options, num) {
 		var t = this
 		if (!(t instanceof it)) return new it(name, options)
 		t.name = name || "{anonymous assert}"
@@ -142,6 +136,14 @@
 
 	it.prototype = describe.asserts = {
 		wait: Fn.hold,
+		it: function(name, options) {
+			this.end()
+			return this.group.it(name, options)
+		},
+		done: function() {
+			this.end()
+			return this.group.done()
+		},
 		describe: function() {
 			this.end()
 			return describe.apply(this, arguments)
