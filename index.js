@@ -155,7 +155,22 @@
 			return describe.apply(this, arguments)
 		},
 		end: function() {
-			print(this.toString())
+			var t = this
+			, fail = t.failed.length
+			, fail_log = ""
+			, name = t.num + " - it " + t.name
+
+			if (t.options.skip) {
+				return "ok " + name + " # skip - " + t.options.skip
+			}
+
+			if (fail) {
+				fail_log = "\n  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---"
+			}
+
+			print((fail ? "not ok " : "ok ") + name +
+				" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
+			)
 		},
 		run: function(fn) {
 			fn.call(this)
@@ -187,24 +202,6 @@
 		type: function(thing, expected, options) {
 			var t = type(thing)
 			return this.ok( t === expected, options || "type should be " + expected + ", got " + t )
-		},
-		toString: function() {
-			var t = this
-			, fail = t.failed.length
-			, fail_log = ""
-			, name = t.num + " - it " + t.name
-
-			if (t.options.skip) {
-				return "ok " + name + " # skip - " + t.options.skip
-			}
-
-			if (fail) {
-				fail_log = "\n  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---"
-			}
-
-			return (fail ? "not ok " : "ok ") + name +
-						" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
-
 		}
 	}
 	exports.describe = describe.describe = describe
