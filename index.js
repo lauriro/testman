@@ -58,11 +58,6 @@
 		t.it    = function(name, options){
 			return t._it(name, options)
 		}
-		t.done  = function(){
-			setTimeout(function(){
-				t._done()
-			}, 1)
-		}
 		t.cases = []
 
 		print("# " + t.name)
@@ -97,7 +92,7 @@
 			t.cases.push( assert )
 			return assert
 		},
-		_done: function() {
+		done: function() {
 			var i, j, test, assert
 			, count = 0
 			, failed = 0
