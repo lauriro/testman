@@ -37,9 +37,9 @@
 	function type(obj) {
 		// Standard clearly states that NaN is a number
 		// but it is not useful for testing.
-		if (obj == null || obj != obj) return "" + obj
-
-		return toString.call(obj).slice(8, -1).toLowerCase()
+		return (
+			obj == null || obj != obj ? "" + obj : toString.call(obj).slice(8, -1)
+		).toLowerCase()
 	}
 
 	print("TAP version 13")
