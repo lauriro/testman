@@ -7,7 +7,22 @@ require("../").
 describe ( "Empty description" ).
 
 describe ( "Description without asserts" ).
-	it ( "should work without asserts" ).
+it ( "should work without asserts" ).
+
+describe ( "test() syntax" ).
+test( "test syntax 1", function(assert) {
+	assert.ok(true)
+	assert.end()
+} ).
+it ( "test it" ).
+test( "test syntax 2", function(assert) {
+	assert.ok(true)
+	assert.end()
+} ).
+test( "test syntax 3", function(assert) {
+	assert.ok(true)
+	assert.end()
+} ).
 
 describe ( "Testman" ).
 	it ( "should pass an OK tests" ).

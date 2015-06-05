@@ -83,6 +83,11 @@
 			t.cases.push( assert )
 			return assert
 		},
+		test: function(name, next, options) {
+			var assert = this.it(name, options)
+			next(assert)
+			return assert
+		},
 		done: function() {
 			var i, j, test, assert
 			, count = 0
@@ -139,6 +144,10 @@
 		it: function(name, options) {
 			this.end()
 			return this.group.it(name, options)
+		},
+		test: function(name, next) {
+			this.end()
+			return this.group.test(name, next)
 		},
 		done: function() {
 			this.end()
