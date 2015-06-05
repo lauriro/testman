@@ -12,7 +12,9 @@
 
 
 !function(exports) {
-	var tests = []
+	var started
+	, assert_num = 1
+	, tests = []
 	, toString = Object.prototype.toString
 	, bold  = '\u001b[1m'
 	, red   = '\u001b[31m'
@@ -21,6 +23,9 @@
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("functional-lite").Fn
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
+	, just_one = parseInt(proc.argv[2]) || false
+	, just_two = parseInt(proc.argv[3]) || false
+
 
 	if (!color) {
 		bold = red = green = reset = ""
@@ -43,10 +48,6 @@
 	}
 
 	print("TAP version 13")
-	var started;
-
-	var just_one = parseInt(proc.argv[2]) || false
-	var just_two = parseInt(proc.argv[3]) || false
 
 	function describe(name) {
 		var t = this
@@ -67,7 +68,6 @@
 		return t
 	}
 
-	var assert_num = 1
 
 	describe.prototype = {
 		describe: function(name) {
