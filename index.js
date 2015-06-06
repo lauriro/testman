@@ -63,7 +63,7 @@
 
 		if (just_one && tests.length != just_one) {
 			print("# skip " + just_one + " " + tests.length)
-			t.it = t.ok = t.equal = t.type = t.run = This
+			t.it = t.ok = t.equal = t.notEqual = t.throws = t.type = t.run = This
 		}
 		return t
 	}
@@ -190,9 +190,10 @@
 			return t
 		},
 		equal: function(a, b, options) {
-			if (typeof a == "function") a = a.call(this)
-			if (typeof b == "function") b = b.call(this)
 			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
+		},
+		notEqual: function(a, b, options) {
+			return this.ok( a !== b, options || "Not expected: " + b)
 		},
 		deepEqual: function(actual, expected, opts) {
 			actual = JSON.stringify(actual)
@@ -201,6 +202,15 @@
 		},
 		anyOf: function(a, b, options) {
 			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
+		},
+		throws: function(fn, options) {
+			var result = false
+			try {
+				fn()
+			} catch(e) {
+				result = true
+			}
+			return this.ok(result, options || "should throw")
 		},
 		type: function(thing, expected, options) {
 			var t = type(thing)

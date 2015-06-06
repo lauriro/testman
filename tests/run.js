@@ -35,10 +35,10 @@ describe ( "Testman" ).
 	it ( "should pass an equal tests" ).
 		equal("a", "a", "a and a should be same").
 		equal(1, 1, "1 and 1 should be same").
-		equal(
-			function(){return true},
-			function(){return true},
-			"function result should be same").
+
+	it ( "should pass an notEqual tests" ).
+		notEqual("a", "b", "a and b should not be same").
+		notEqual(1, 2, "1 and 2 should not be same").
 
 	it ( "should pass a deepEqual tests" ).
 		deepEqual("a", "a", "a and a should be same").
