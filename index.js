@@ -21,7 +21,7 @@
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
-	, Fn = exports.Fn || require("functional-lite").Fn
+	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
 	, just_one = parseInt(proc.argv[2]) || false
 	, just_two = parseInt(proc.argv[3]) || false

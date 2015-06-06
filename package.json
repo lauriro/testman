@@ -22,8 +22,5 @@
   "repository": "git://github.com/lauriro/testman.git",
   "bugs": {
     "url": "https://github.com/lauriro/testman/issues"
-  },
-  "dependencies": {
-    "functional-lite": "0.4.0"
   }
 }
