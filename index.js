@@ -163,8 +163,12 @@
 			, fail_log = ""
 			, name = t.num + " - it " + t.name
 
+			if (t.ended) return
+
+			t.ended = new Date()
+
 			if (t.options.skip) {
-				return "ok " + name + " # skip - " + t.options.skip
+				return print("ok " + name + " # skip - " + t.options.skip)
 			}
 
 			if (fail) {
