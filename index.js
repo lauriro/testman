@@ -22,6 +22,7 @@
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
+	, assert = require("assert")
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
 	, just_one = parseInt(proc.argv[2]) || false
 	, just_two = parseInt(proc.argv[3]) || false
@@ -139,7 +140,7 @@
 		return t
 	}
 
-	it.prototype = describe.asserts = {
+	it.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
 		it: function(name, options) {
 			this.end()
@@ -172,7 +173,7 @@
 			}
 
 			if (fail) {
-				fail_log = "\n  ---\n    messages:\n      - " + this.failed.join("\n      - ") + "\n  ---"
+				fail_log = "\n---\n" + this.failed.join("\n") + "\n---"
 			}
 
 			print((fail ? "not ok " : "ok ") + name +
@@ -183,46 +184,35 @@
 			fn.call(this)
 			return this
 		},
-		ok: function(value, options) {
-			var t = this
-			options = options || {}
-
-			if (typeof options == "string") options = { message: options }
-
-			if (typeof value == "function") value = value.call(t)
-			t[ value ? "passed" : "failed" ].push(options.message + " #" + (t.passed.length+t.failed.length+1))
-			return t
-		},
-		equal: function(a, b, options) {
-			return this.ok( a === b, options || "Expected: "+b+" Got: "+a )
-		},
-		notEqual: function(a, b, options) {
-			return this.ok( a !== b, options || "Not expected: " + b)
-		},
-		deepEqual: function(actual, expected, opts) {
-			actual = JSON.stringify(actual)
-			expected = JSON.stringify(expected)
-			return this.ok( actual === expected, opts || "Expected: "+expected+" Got: "+actual )
-		},
 		anyOf: function(a, b, options) {
 			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
-		},
-		throws: function(fn, options) {
-			var result = false
-			try {
-				fn()
-			} catch(e) {
-				result = true
-			}
-			return this.ok(result, options || "should throw")
 		},
 		type: function(thing, expected, options) {
 			var t = type(thing)
 			return this.ok( t === expected, options || "type should be " + expected + ", got " + t )
 		}
 	}
+
+	function makeTry(name) {
+		it.prototype[name] = function(actual, expected, message) {
+			var t = this
+			, prefix = " #" + (t.passed.length + t.failed.length+1)
+			try {
+				assert[name](actual, expected, message)
+				t.passed.push(message + prefix)
+			} catch(e) {
+				t.failed.push(e.stack)
+			}
+			return t
+		}
+		exports[name] = assert[name]
+		it.prototype["_" + name] = This
+	}
+
+	;["fail", "ok", "equal", "notEqual", "deepEqual", "notDeepEqual", "strictEqual"
+	, "notStrictEqual", "throws", "doesNotThrow", "ifError"].map(makeTry)
+
 	exports.describe = describe.describe = describe
-	describe.it = it.prototype
 
 }(this)
 
