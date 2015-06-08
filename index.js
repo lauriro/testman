@@ -12,7 +12,7 @@
 
 
 !function(exports) {
-	var started
+	var doneTick, started
 	, assert_num = 1
 	, tests = []
 	, toString = Object.prototype.toString
@@ -78,6 +78,12 @@
 			var t = this
 			, assert = new it(name, options, assert_num)
 
+			clearTimeout(doneTick)
+
+			doneTick = setTimeout(function() {
+				t.done()
+			}, 50)
+
 			assert.group = t
 			assert.num = assert_num++
 
@@ -96,6 +102,9 @@
 			, passed_asserts = 0
 			, failed_asserts = 0
 			, ended = +new Date()
+
+			if (this.done_) return
+			this.done_ = ended
 
 			for (i = 0; test = tests[i++]; ) {
 				for (j = 0; assert = test.cases[j++]; ) {
