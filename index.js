@@ -129,7 +129,7 @@
 			* Failed 3/6 tests, 50.00% okay
 			* PASS 1 test executed in 0.023s, 1 passed, 0 failed, 0 dubious, 0 skipped.
 			*/
-			if (typeof process != "undefined" && process.exit) process.exit()
+			if (proc.exit) proc.exit()
 		}
 	}
 
