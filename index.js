@@ -223,6 +223,12 @@
 
 	exports.describe = describe.describe = describe
 
+	var testPoint
+	exports.test = function(name, next) {
+		if (!testPoint) testPoint = new describe()
+		return testPoint = testPoint.test(name, next)
+	}
+
 }(this)
 
 
