@@ -51,43 +51,47 @@
 	print("TAP version 13")
 
 	function describe(name) {
-		var t = this
-		if (!(t instanceof describe)) return new describe(name)
+		return new Suite(name)
+	}
+
+	function Suite(name) {
+		var suite = this
 
 		if (!started) started = +new Date()
 
-		t.name  = name || "{anonymous test}"
-		t.cases = []
+		suite.name  = name || "{Unnamed test suite}"
+		suite.cases = []
 
-		print("# " + t.name)
-		tests.push(t)
+		print("# " + suite.name)
+		tests.push(suite)
 
 		if (just_one && tests.length != just_one) {
 			print("# skip " + just_one + " " + tests.length)
-			t.it = t.ok = t.equal = t.notEqual = t.throws = t.type = t.run = This
+			suite.it = suite.ok = suite.equal = suite.notEqual = suite.throws = suite.type = suite.run = This
 		}
-		return t
+		return suite
 	}
 
 
-	describe.prototype = {
-		describe: function(name) {
-			return new describe(name)
+
+	Suite.prototype = {
+		_test: This,
+		describe: describe,
 		},
 		it: function(name, options) {
-			var t = this
+			var suite = this
 			, assert = new it(name, options, assert_num)
 
 			clearTimeout(doneTick)
 
 			doneTick = setTimeout(function() {
-				t.done()
+				suite.done()
 			}, 50)
 
-			assert.group = t
+			assert.suite = suite
 			assert.num = assert_num++
 
-			t.cases.push( assert )
+			suite.cases.push( assert )
 			return assert
 		},
 		test: function(name, next, options) {
@@ -153,19 +157,19 @@
 		wait: Fn.hold,
 		it: function(name, options) {
 			this.end()
-			return this.group.it(name, options)
+			return this.suite.it(name, options)
 		},
 		test: function(name, next) {
 			this.end()
-			return this.group.test(name, next)
+			return this.suite.test(name, next)
 		},
 		done: function() {
 			this.end()
-			return this.group.done()
+			return this.suite.done()
 		},
-		describe: function() {
+		describe: function(name) {
 			this.end()
-			return describe.apply(this, arguments)
+			return new Suite(name)
 		},
 		end: function() {
 			var t = this
@@ -225,7 +229,7 @@
 
 	var testPoint
 	exports.test = function(name, next) {
-		if (!testPoint) testPoint = new describe()
+		if (!testPoint) testPoint = new Suite()
 		return testPoint = testPoint.test(name, next)
 	}
 
