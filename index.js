@@ -79,7 +79,7 @@
 		describe: describe,
 		it: function(name, options) {
 			var testSuite = this
-			, testCase = new TestCase(name, options, assert_num)
+			, testCase = new TestCase(name, options, testSuite)
 
 			clearTimeout(doneTick)
 
@@ -87,10 +87,6 @@
 				testSuite.done()
 			}, 50)
 
-			testCase.testSuite = testSuite
-			testCase.num = assert_num++
-
-			testSuite.cases.push( testCase )
 			return testCase
 		},
 		test: function(name, next, options) {
@@ -136,15 +132,19 @@
 		}
 	}
 
-	function TestCase(name, options, num) {
+	function TestCase(name, options, testSuite) {
 		var testCase = this
 		testCase.name = name || "{anonymous testCase}"
 		testCase.options = options || {}
 		testCase.hooks = []
 		testCase.failed = []
 		testCase.passed = []
+		testCase.testSuite = testSuite
+		testCase.num = assert_num++
 
-		if (just_two && num != just_two) testCase.options.skip = "by argv"
+		testSuite.cases.push( testCase )
+
+		if (just_two && testCase.num != just_two) testCase.options.skip = "by argv"
 		if (testCase.options.skip) {
 			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
