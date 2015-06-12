@@ -78,20 +78,20 @@
 		_test: This,
 		describe: describe,
 		it: function(name, options) {
+			return this.test("it " + name, null, options)
+		},
+		test: function(name, next, options) {
 			var testSuite = this
 			, testCase = new TestCase(name, options, testSuite)
 
 			clearTimeout(doneTick)
 
+			if (next) next(testCase)
+
 			doneTick = setTimeout(function() {
 				testSuite.done()
 			}, 50)
 
-			return testCase
-		},
-		test: function(name, next, options) {
-			var testCase = this.it(name, options)
-			next(testCase)
 			return testCase
 		},
 		done: function() {
@@ -163,7 +163,7 @@
 			var testCase = this
 			, fail = testCase.failed.length
 			, fail_log = ""
-			, name = testCase.num + " - it " + testCase.name
+			, name = testCase.num + " - " + testCase.name
 
 			if (testCase.ended) return
 
