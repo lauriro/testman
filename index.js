@@ -51,53 +51,53 @@
 	print("TAP version 13")
 
 	function describe(name) {
-		return new Suite(name)
+		return new TestSuite(name)
 	}
 
-	function Suite(name) {
-		var suite = this
+	function TestSuite(name) {
+		var testSuite = this
 
 		if (!started) started = +new Date()
 
-		suite.name  = name || "{Unnamed test suite}"
-		suite.cases = []
+		testSuite.name  = name || "{Unnamed test suite}"
+		testSuite.cases = []
 
-		print("# " + suite.name)
-		tests.push(suite)
+		print("# " + testSuite.name)
+		tests.push(testSuite)
 
 		if (just_one && tests.length != just_one) {
 			print("# skip " + just_one + " " + tests.length)
-			suite.it = suite.ok = suite.equal = suite.notEqual = suite.throws = suite.type = suite.run = This
+			testSuite.it = testSuite.ok = testSuite.equal = testSuite.notEqual = testSuite.throws = testSuite.type = testSuite.run = This
 		}
-		return suite
+		return testSuite
 	}
 
 
 
-	Suite.prototype = {
+	TestSuite.prototype = {
 		_test: This,
 		describe: describe,
 		},
 		it: function(name, options) {
-			var suite = this
-			, assert = new it(name, options, assert_num)
+			var testSuite = this
+			, testCase = new TestCase(name, options, assert_num)
 
 			clearTimeout(doneTick)
 
 			doneTick = setTimeout(function() {
-				suite.done()
+				testSuite.done()
 			}, 50)
 
-			assert.suite = suite
-			assert.num = assert_num++
+			testCase.testSuite = testSuite
+			testCase.num = assert_num++
 
-			suite.cases.push( assert )
-			return assert
+			testSuite.cases.push( testCase )
+			return testCase
 		},
 		test: function(name, next, options) {
-			var assert = this.it(name, options)
-			next(assert)
-			return assert
+			var testCase = this.it(name, options)
+			next(testCase)
+			return testCase
 		},
 		done: function() {
 			var i, j, test, assert
@@ -137,52 +137,51 @@
 		}
 	}
 
-	function it(name, options, num) {
-		var t = this
-		if (!(t instanceof it)) return new it(name, options)
-		t.name = name || "{anonymous assert}"
-		t.options = options || {}
-		t.hooks = []
-		t.failed = []
-		t.passed = []
+	function TestCase(name, options, num) {
+		var testCase = this
+		testCase.name = name || "{anonymous testCase}"
+		testCase.options = options || {}
+		testCase.hooks = []
+		testCase.failed = []
+		testCase.passed = []
 
-		if (just_two && num != just_two) t.options.skip = "by argv"
-		if (t.options.skip) {
-			t.ok = t.equal = t.type = t.run = This
+		if (just_two && num != just_two) testCase.options.skip = "by argv"
+		if (testCase.options.skip) {
+			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
-		return t
+		return testCase
 	}
 
-	it.prototype = describe.it = describe.assert = {
+	TestCase.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
 		it: function(name, options) {
 			this.end()
-			return this.suite.it(name, options)
+			return this.testSuite.it(name, options)
 		},
 		test: function(name, next) {
 			this.end()
-			return this.suite.test(name, next)
+			return this.testSuite.test(name, next)
 		},
 		done: function() {
 			this.end()
-			return this.suite.done()
+			return this.testSuite.done()
 		},
 		describe: function(name) {
 			this.end()
-			return new Suite(name)
+			return new TestSuite(name)
 		},
 		end: function() {
-			var t = this
-			, fail = t.failed.length
+			var testCase = this
+			, fail = testCase.failed.length
 			, fail_log = ""
-			, name = t.num + " - it " + t.name
+			, name = testCase.num + " - it " + testCase.name
 
-			if (t.ended) return
+			if (testCase.ended) return
 
-			t.ended = new Date()
+			testCase.ended = new Date()
 
-			if (t.options.skip) {
-				return print("ok " + name + " # skip - " + t.options.skip)
+			if (testCase.options.skip) {
+				return print("ok " + name + " # skip - " + testCase.options.skip)
 			}
 
 			if (fail) {
@@ -207,19 +206,19 @@
 	}
 
 	function makeTry(name) {
-		it.prototype[name] = function(actual, expected, message) {
-			var t = this
-			, prefix = " #" + (t.passed.length + t.failed.length+1)
+		TestCase.prototype[name] = function(actual, expected, message) {
+			var testCase = this
+			, prefix = " #" + (testCase.passed.length + testCase.failed.length+1)
 			try {
 				assert[name](actual, expected, message)
-				t.passed.push(message + prefix)
+				testCase.passed.push(message + prefix)
 			} catch(e) {
-				t.failed.push(e.stack)
+				testCase.failed.push(e.stack)
 			}
-			return t
+			return testCase
 		}
 		exports[name] = assert[name]
-		it.prototype["_" + name] = This
+		TestCase.prototype["_" + name] = This
 	}
 
 	;["fail", "ok", "equal", "notEqual", "deepEqual", "notDeepEqual", "strictEqual"
@@ -229,7 +228,7 @@
 
 	var testPoint
 	exports.test = function(name, next) {
-		if (!testPoint) testPoint = new Suite()
+		if (!testPoint) testPoint = new TestSuite()
 		return testPoint = testPoint.test(name, next)
 	}
 
