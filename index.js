@@ -13,6 +13,10 @@
 
 !function(exports) {
 	var doneTick, started
+	, totalCases = 0
+	, failedCases = 0
+	, totalAsserts = 0
+	, passedAsserts = 0
 	, assert_num = 1
 	, tests = []
 	, toString = Object.prototype.toString
@@ -95,33 +99,18 @@
 			return testCase
 		},
 		done: function() {
-			var i, j, test, assert
-			, count = 0
-			, failed = 0
-			, passed_asserts = 0
-			, failed_asserts = 0
-			, ended = +new Date()
-
 			if (this.done_) return
-			this.done_ = ended
+			this.done_ = +new Date()
 
-			for (i = 0; test = tests[i++]; ) {
-				for (j = 0; assert = test.cases[j++]; ) {
-					if (assert.failed.length) failed++
-					failed_asserts += assert.failed.length
-					passed_asserts += assert.passed.length
-				}
-				count += test.cases.length
-			}
-			print("1.." + count)
-			print("#" + (failed ? "" : green + bold) + " pass  " + (count - failed)
-				+ "/" + count
-				+ " [" + passed_asserts + "/" +(passed_asserts + failed_asserts)+ "]"
-				+ " in " + (ended - started) + " ms"
+			print("1.." + totalCases)
+			print("#" + (failedCases ? "" : green + bold) + " pass  " + (totalCases - failedCases)
+				+ "/" + totalCases
+				+ " [" + passedAsserts + "/" + totalAsserts + "]"
+				+ " in " + (this.done_ - started) + " ms"
 				+ reset)
 
-			failed && print("#" + red + bold + " fail  " + failed
-				+ " [" +failed_asserts+ "]"
+			failedCases && print("#" + red + bold + " fail  " + failedCases
+				+ " [" + (totalAsserts - passedAsserts) + "]"
 				+ reset)
 			/*
 			* FAILED tests 1, 3, 6
@@ -153,6 +142,7 @@
 				return testSuite[name].apply(testSuite, arguments)
 			}
 		})
+		totalCases++
 
 		return testCase
 	}
@@ -174,6 +164,7 @@
 			}
 
 			if (fail) {
+				failedCases++
 				fail_log = "\n---\n" + this.failed.join("\n") + "\n---"
 			}
 
@@ -198,9 +189,11 @@
 		TestCase.prototype[name] = function(actual, expected, message) {
 			var testCase = this
 			, prefix = " #" + (testCase.passed.length + testCase.failed.length+1)
+			totalAsserts++
 			try {
 				assert[name](actual, expected, message)
 				testCase.passed.push(message + prefix)
+				passedAsserts++
 			} catch(e) {
 				testCase.failed.push(e.stack)
 			}
