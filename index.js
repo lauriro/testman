@@ -136,10 +136,8 @@
 		var testCase = this
 		testCase.name = name || "{anonymous testCase}"
 		testCase.options = options || {}
-		testCase.hooks = []
 		testCase.failed = []
 		testCase.passed = []
-		testCase.testSuite = testSuite
 		testCase.num = assert_num++
 
 		testSuite.cases.push( testCase )
@@ -148,27 +146,19 @@
 		if (testCase.options.skip) {
 			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
+
+		;["describe", "it", "test", "done"].forEach(function(name) {
+			testCase[name] = function() {
+				testCase.end()
+				return testSuite[name].apply(testSuite, arguments)
+			}
+		})
+
 		return testCase
 	}
 
 	TestCase.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
-		it: function(name, options) {
-			this.end()
-			return this.testSuite.it(name, options)
-		},
-		test: function(name, next) {
-			this.end()
-			return this.testSuite.test(name, next)
-		},
-		done: function() {
-			this.end()
-			return this.testSuite.done()
-		},
-		describe: function(name) {
-			this.end()
-			return describe(name)
-		},
 		end: function() {
 			var testCase = this
 			, fail = testCase.failed.length
