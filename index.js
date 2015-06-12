@@ -167,7 +167,7 @@
 		},
 		describe: function(name) {
 			this.end()
-			return new TestSuite(name)
+			return describe(name)
 		},
 		end: function() {
 			var testCase = this
@@ -227,7 +227,7 @@
 
 	var testPoint
 	exports.test = function(name, next) {
-		if (!testPoint) testPoint = new TestSuite()
+		if (!testPoint) testPoint = describe()
 		return testPoint = testPoint.test(name, next)
 	}
 
