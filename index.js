@@ -77,7 +77,6 @@
 	TestSuite.prototype = {
 		_test: This,
 		describe: describe,
-		},
 		it: function(name, options) {
 			var testSuite = this
 			, testCase = new TestCase(name, options, assert_num)
