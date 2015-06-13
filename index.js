@@ -132,13 +132,8 @@
 			var testSuite = this
 			, testCase = new TestCase(name, options, testSuite)
 
-			clearTimeout(doneTick)
 
 			if (next) next(testCase)
-
-			doneTick = setTimeout(function() {
-				testSuite.done()
-			}, 50)
 
 			return testCase
 		},
@@ -167,6 +162,7 @@
 
 	function TestCase(name, options, testSuite) {
 		var testCase = this
+		, ok = testCase.ok
 		totalCases++
 		testCase.name = totalCases + " - " + (name || "{anonymous testCase}")
 		testCase.options = options || {}
@@ -187,6 +183,14 @@
 				return testSuite[name].apply(testSuite, arguments)
 			}
 		})
+
+		clearTimeout(doneTick)
+		doneTick = setTimeout(done, 50)
+
+		function done() {
+			if (ok == testCase.ok) testSuite.done()
+			else testCase.run(done)
+		}
 
 		return testCase
 	}
