@@ -17,7 +17,6 @@
 	, failedCases = 0
 	, totalAsserts = 0
 	, passedAsserts = 0
-	, assert_num = 1
 	, tests = []
 	, toString = Object.prototype.toString
 	, bold  = '\u001b[1m'
@@ -123,15 +122,15 @@
 
 	function TestCase(name, options, testSuite) {
 		var testCase = this
-		testCase.name = name || "{anonymous testCase}"
+		totalCases++
+		testCase.name = totalCases + " - " + (name || "{anonymous testCase}")
 		testCase.options = options || {}
 		testCase.failed = []
 		testCase.passed = []
-		testCase.num = assert_num++
 
 		testSuite.cases.push( testCase )
 
-		if (just_two && testCase.num != just_two) testCase.options.skip = "by argv"
+		if (just_two && totalCases != just_two) testCase.options.skip = "by argv"
 		if (testCase.options.skip) {
 			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
@@ -142,7 +141,6 @@
 				return testSuite[name].apply(testSuite, arguments)
 			}
 		})
-		totalCases++
 
 		return testCase
 	}
@@ -153,14 +151,13 @@
 			var testCase = this
 			, fail = testCase.failed.length
 			, fail_log = ""
-			, name = testCase.num + " - " + testCase.name
 
 			if (testCase.ended) return
 
 			testCase.ended = new Date()
 
 			if (testCase.options.skip) {
-				return print("ok " + name + " # skip - " + testCase.options.skip)
+				return print("ok " + testCase.name + " # skip - " + testCase.options.skip)
 			}
 
 			if (fail) {
@@ -168,7 +165,7 @@
 				fail_log = "\n---\n" + this.failed.join("\n") + "\n---"
 			}
 
-			print((fail ? "not ok " : "ok ") + name +
+			print((fail ? "not ok " : "ok ") + testCase.name +
 				" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
 			)
 		},
