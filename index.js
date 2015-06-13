@@ -25,7 +25,6 @@
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
-	, assert = require("assert")
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
 	, just_one = parseInt(proc.argv[2]) || false
 	, just_two = parseInt(proc.argv[3]) || false
@@ -50,6 +49,52 @@
 			obj == null || obj != obj ? "" + obj : toString.call(obj).slice(8, -1)
 		).toLowerCase()
 	}
+
+	function deepEqual(actual, expected) {
+		if (actual === expected) return true
+
+		var key, len
+		, actualType = type(actual)
+
+		if (actualType != type(expected)) return false
+
+		if (actualType == "object") {
+			var keysA = Object.keys(actual)
+			, keysB = Object.keys(expected)
+			if (keysA.length != keysB.length || !deepEqual(keysA.sort(), keysB.sort())) return false
+			for (len = keysA.length; len--; ) {
+				key = keysA[len]
+				if (!deepEqual(actual[key], expected[key])) return false
+			}
+			return true
+		}
+
+		if (actualType == "array" || actualType == "arguments") {
+			if (actual.length != expected.length) return false
+			for (len = actual.length; len--; ) {
+				if (!deepEqual(actual[len], expected[len])) return false
+			}
+			return true
+		}
+
+		return "" + actual == "" + expected
+	}
+
+	function msg(actual, expected, message, operator) {
+		return message || actual + operator + expected
+	}
+
+
+	function AssertionError(message, _stackStart) {
+		this.name = "AssertionError"
+		this.message = message
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, _stackStart || AssertionError)
+		}
+	}
+	AssertionError.prototype = Object.create(Error.prototype)
+
+
 
 	print("TAP version 13")
 
@@ -147,6 +192,48 @@
 
 	TestCase.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
+		ok: function(value, message) {
+			var testCase = this
+			, prefix = " #" + (testCase.passed.length + testCase.failed.length+1)
+			totalAsserts++
+			testCase.totalAsserts++
+			try {
+				if (!value) throw new AssertionError(message)
+				testCase.passed.push(message + prefix)
+				passedAsserts++
+			} catch(e) {
+				testCase.failed.push(e.stack)
+			}
+			return testCase
+		},
+		equal: function(actual, expected, message) {
+			return this.ok(actual == expected, msg(actual, expected, message, "=="))
+		},
+		notEqual: function(actual, expected, message) {
+			return this.ok(actual != expected, msg(actual, expected, message, "!="))
+		},
+		strictEqual: function(actual, expected, message) {
+			return this.ok(actual === expected, msg(actual, expected, message, "==="))
+		},
+		notStrictEqual: function(actual, expected, message) {
+			return this.ok(actual !== expected, msg(actual, expected, message, "!=="))
+		},
+		deepEqual: function(actual, expected, message) {
+			return this.ok(deepEqual(actual, expected), msg(actual, expected, message, "deepEqual"))
+		},
+		notDeepEqual: function(actual, expected, message) {
+			return this.ok(!deepEqual(actual, expected), msg(actual, expected, message, "notDeepEqual"))
+		},
+		throws: function(fn, message) {
+			var actual = false
+			, expected = true
+			try {
+				fn()
+			} catch(e) {
+				actual = true
+			}
+			return this.ok(actual, msg(actual, expected, message, "throws"))
+		},
 		end: function() {
 			var testCase = this
 			, fail = testCase.failed.length
@@ -181,27 +268,6 @@
 			return this.ok( t === expected, options || "type should be " + expected + ", got " + t )
 		}
 	}
-
-	function makeTry(name) {
-		TestCase.prototype[name] = function(actual, expected, message) {
-			var testCase = this
-			, prefix = " #" + (testCase.passed.length + testCase.failed.length+1)
-			totalAsserts++
-			try {
-				assert[name](actual, expected, message)
-				testCase.passed.push(message + prefix)
-				passedAsserts++
-			} catch(e) {
-				testCase.failed.push(e.stack)
-			}
-			return testCase
-		}
-		exports[name] = assert[name]
-		TestCase.prototype["_" + name] = This
-	}
-
-	;["fail", "ok", "equal", "notEqual", "deepEqual", "notDeepEqual", "strictEqual"
-	, "notStrictEqual", "throws", "doesNotThrow", "ifError"].map(makeTry)
 
 	exports.describe = describe.describe = describe
 
