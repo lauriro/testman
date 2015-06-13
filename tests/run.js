@@ -16,6 +16,7 @@ test( "test syntax 1", function(assert) {
 } ).
 it ( "test it" ).
 test( "test syntax 2", function(assert) {
+	assert.plan(1)
 	assert.ok(true)
 	assert.end()
 } ).

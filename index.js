@@ -172,6 +172,7 @@
 		testCase.options = options || {}
 		testCase.failed = []
 		testCase.passed = []
+		testCase.totalAsserts = 0
 
 		testSuite.cases.push( testCase )
 
@@ -234,9 +235,12 @@
 			}
 			return this.ok(actual, msg(actual, expected, message, "throws"))
 		},
+		plan: function(num) {
+			this.planned = num
+			return this
+		},
 		end: function() {
 			var testCase = this
-			, fail = testCase.failed.length
 			, fail_log = ""
 
 			if (testCase.ended) return
@@ -246,6 +250,12 @@
 			if (testCase.options.skip) {
 				return print("ok " + testCase.name + " # skip - " + testCase.options.skip)
 			}
+
+			if (testCase.planned != void 0) {
+				testCase.equal(testCase.planned, testCase.totalAsserts, null, "planned")
+			}
+
+			var fail = testCase.failed.length
 
 			if (fail) {
 				failedCases++
