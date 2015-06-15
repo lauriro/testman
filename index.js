@@ -163,7 +163,7 @@
 		testCase.name = totalCases + " - " + (name || "{unnamed test case}")
 		testCase.options = options || {}
 		testCase.failed = []
-		testCase.passed = []
+		testCase.passedAsserts = 0
 		testCase.totalAsserts = 0
 
 		testSuite.cases.push( testCase )
@@ -195,16 +195,16 @@
 		wait: Fn.hold,
 		ok: function(value, message) {
 			var testCase = this
-			, prefix = " #" + (testCase.passed.length + testCase.failed.length+1)
+			, prefix = " #" + (testCase.passedAsserts + testCase.failed.length+1)
 			totalAsserts++
 			testCase.totalAsserts++
 			try {
 				if (typeof value == "function") value = value.call(testCase)
 				if (!value) throw new AssertionError(message)
-				testCase.passed.push(message + prefix)
 				passedAsserts++
+				testCase.passedAsserts++
 			} catch(e) {
-				testCase.failed.push(e.stack)
+				testCase.failed.push(message + prefix + "\n" + e.stack)
 			}
 			return testCase
 		},
@@ -242,7 +242,6 @@
 		},
 		end: function() {
 			var testCase = this
-			, fail_log = ""
 
 			if (testCase.ended) return
 
@@ -256,16 +255,14 @@
 				testCase.equal(testCase.planned, testCase.totalAsserts, null, "planned")
 			}
 
-			var fail = testCase.failed.length
+			testCase.name += " [" + testCase.passedAsserts + "/" + testCase.totalAsserts + "]"
 
-			if (fail) {
+			if (testCase.failed.length) {
 				failedCases++
-				fail_log = "\n---\n" + this.failed.join("\n") + "\n---"
+				print("not ok " + testCase.name + "\n---\n" + testCase.failed.join("\n") + "\n---")
+			} else {
+				print("ok " + testCase.name)
 			}
-
-			print((fail ? "not ok " : "ok ") + testCase.name +
-				" [" + (this.passed.length) + "/" + (this.passed.length+fail) + "]" + fail_log
-			)
 		},
 		run: function(fn) {
 			fn.call(this)
