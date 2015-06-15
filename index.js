@@ -24,8 +24,6 @@
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
-	, just_one = parseInt(proc.argv[2]) || false
-	, just_two = parseInt(proc.argv[3]) || false
 
 
 	if (!color) {
@@ -59,8 +57,9 @@
 		if (actualType == "object") {
 			var keysA = Object.keys(actual)
 			, keysB = Object.keys(expected)
-			if (keysA.length != keysB.length || !deepEqual(keysA.sort(), keysB.sort())) return false
-			for (len = keysA.length; len--; ) {
+			len = keysA.length
+			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort())) return false
+			for (; len--; ) {
 				key = keysA[len]
 				if (!deepEqual(actual[key], expected[key])) return false
 			}
@@ -68,8 +67,9 @@
 		}
 
 		if (actualType == "array" || actualType == "arguments") {
-			if (actual.length != expected.length) return false
-			for (len = actual.length; len--; ) {
+			len = actual.length
+			if (len != expected.length) return false
+			for (; len--; ) {
 				if (!deepEqual(actual[len], expected[len])) return false
 			}
 			return true
@@ -110,10 +110,6 @@
 
 		print("# " + testSuite.name)
 
-		if (just_one && tests.length != just_one) {
-			print("# skip " + just_one + " " + tests.length)
-			testSuite.it = testSuite.ok = testSuite.equal = testSuite.notEqual = testSuite.throws = testSuite.type = testSuite.run = This
-		}
 		return testSuite
 	}
 
@@ -168,7 +164,6 @@
 
 		testSuite.cases.push( testCase )
 
-		if (just_two && totalCases != just_two) testCase.options.skip = "by argv"
 		if (testCase.options.skip) {
 			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
@@ -268,12 +263,12 @@
 			fn.call(this)
 			return this
 		},
-		anyOf: function(a, b, options) {
-			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, options || "should be one of '" + b + "', got " + a )
+		anyOf: function(a, b) {
+			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, "should be one of '" + b + "', got " + a )
 		},
-		type: function(thing, expected, options) {
+		type: function(thing, expected) {
 			var t = type(thing)
-			return this.ok( t === expected, options || "type should be " + expected + ", got " + t )
+			return this.ok( t === expected, "type should be " + expected + ", got " + t )
 		}
 	}
 
