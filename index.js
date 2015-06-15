@@ -10,14 +10,12 @@
 */
 
 
-
 !function(exports) {
 	var doneTick, started
 	, totalCases = 0
 	, failedCases = 0
 	, totalAsserts = 0
 	, passedAsserts = 0
-	, tests = []
 	, toString = Object.prototype.toString
 	, bold  = '\u001b[1m'
 	, red   = '\u001b[31m'
@@ -107,11 +105,10 @@
 
 		if (!started) started = +new Date()
 
-		testSuite.name  = name || "{Unnamed test suite}"
+		testSuite.name  = name || "{unnamed test suite}"
 		testSuite.cases = []
 
 		print("# " + testSuite.name)
-		tests.push(testSuite)
 
 		if (just_one && tests.length != just_one) {
 			print("# skip " + just_one + " " + tests.length)
@@ -162,9 +159,8 @@
 
 	function TestCase(name, options, testSuite) {
 		var testCase = this
-		, ok = testCase.ok
 		totalCases++
-		testCase.name = totalCases + " - " + (name || "{anonymous testCase}")
+		testCase.name = totalCases + " - " + (name || "{unnamed test case}")
 		testCase.options = options || {}
 		testCase.failed = []
 		testCase.passed = []
@@ -188,7 +184,7 @@
 		doneTick = setTimeout(done, 50)
 
 		function done() {
-			if (ok == testCase.ok) testSuite.done()
+			if (testCase.ok == describe.it.ok) testSuite.done()
 			else testCase.run(done)
 		}
 
@@ -203,6 +199,7 @@
 			totalAsserts++
 			testCase.totalAsserts++
 			try {
+				if (typeof value == "function") value = value.call(testCase)
 				if (!value) throw new AssertionError(message)
 				testCase.passed.push(message + prefix)
 				passedAsserts++

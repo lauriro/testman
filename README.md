@@ -3,7 +3,7 @@
 [2]: https://travis-ci.org/lauriro/testman
 [3]: https://coveralls.io/repos/lauriro/testman/badge.png
 [4]: https://coveralls.io/r/lauriro/testman
-[npm-package]: https://npmjs.org/package/testman
+[npm package]: https://npmjs.org/package/testman
 [GitHub repo]: https://github.com/litejs/testman
 
 
