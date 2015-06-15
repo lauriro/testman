@@ -93,9 +93,6 @@
 	AssertionError.prototype = Object.create(Error.prototype)
 
 
-
-	print("TAP version 13")
-
 	function describe(name) {
 		return new TestSuite(name)
 	}
@@ -103,7 +100,10 @@
 	function TestSuite(name) {
 		var testSuite = this
 
-		if (!started) started = +new Date()
+		if (!started) {
+			started = +new Date()
+			print("TAP version 13")
+		}
 
 		testSuite.name  = name || "{unnamed test suite}"
 		testSuite.cases = []
