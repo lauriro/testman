@@ -12,7 +12,8 @@
   "main": "index.js",
   "readmeFilename": "README.md",
   "files": [
-    "index.js"
+    "index.js",
+    "lib"
   ],
   "scripts": {
     "build": "node ../buildman/index.js --all",
