@@ -17,8 +17,7 @@
   ],
   "scripts": {
     "build": "node ../buildman/index.js --all",
-    "travis-test": "istanbul cover ./tests/run.js && (coveralls < coverage/lcov.info || exit 0)",
-    "test": "node tests/run.js"
+    "test": "node tests/index.js"
   },
   "repository": "git://github.com/lauriro/testman.git",
   "bugs": {
