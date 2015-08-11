@@ -148,6 +148,23 @@
 		return this
 	}
 
+	describe.it.assertCssUsage = function(options) {
+		var assert = this.it("should use all css rules")
+
+		var sel
+		, selectors = describe.GLOBAL.selectorsUsage
+		, arr = Object.keys(selectors)
+		, len = arr.length
+
+		assert.plan(len)
+		assert.options.noStack = true
+
+		while (sel = arr[--len]) {
+			assert.ok(selectors[sel].count, "Unused rule '" + sel + "' in " + selectors[sel].files)
+		}
+		return assert
+	}
+
 	describe.it.collectViewsUsage = function() {
 		var viewsUsage = describe.GLOBAL.viewsUsage = {}
 
