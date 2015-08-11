@@ -179,6 +179,22 @@
 		return this
 	}
 
+	describe.it.assertViewsUsage = function() {
+		var assert = this.it("should use all views")
+		var route
+		, routes = Object.keys(View.views)
+		, len = routes.length
+		, viewsUsage = describe.GLOBAL.viewsUsage
+
+		assert.plan(len)
+		assert.options.noStack = true
+
+		while (route = routes[--len]) {
+			assert.ok(viewsUsage[route], "Unused view " + route)
+		}
+		return assert
+	}
+
 	function clear(path) {
 		if (typeof path != "string") {
 			throw new TypeError("Path must be a string. Received " + typeof path)
