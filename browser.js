@@ -225,5 +225,14 @@
 		return from.slice(common).concat(to.slice(common)).join("/")
 	}
 
+	function isVisible(node) {
+		var style = window.getComputedStyle ? window.getComputedStyle(node, null) : node.currentStyle
+	}
+
+	describe.it.isVisible = function(actual, expected, options) {
+		var node = actual
+		, visible = node.offsetHeight != 0
+	}
+
 }(describe)
 
