@@ -106,6 +106,7 @@
 		, styleSheets = document.styleSheets
 		, styleSheetsCount = styleSheets.length
 		, ignoreFiles = options.ignoreFiles
+		, ignoreSelectors = options.ignoreSelectors
 		, cleanSelectorRe = /:(?:focus|active|empty|hover|:after|:before|:selection)\b/g
 
 		while (styleSheet = styleSheets[--styleSheetsCount]) {
@@ -126,6 +127,9 @@
 				} else if (rule.selectorText) {
 					rule.selectorText.split(/\s*,\s*/).each(function(sel) {
 						sel = sel.replace(cleanSelectorRe, "")
+						if (ignoreSelectors && ignoreSelectors.indexOf(sel) > -1) {
+							return
+						}
 						selectors[sel] = selectors[sel] || {files: [], count: 0}
 						if (selectors[sel].files.indexOf(fileName + ":" + rulesCount) == -1) {
 							selectors[sel].files.unshift(fileName + ":" + rulesCount)
