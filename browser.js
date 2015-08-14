@@ -45,7 +45,7 @@
 	}
 	describe.it.waitSelector = function(actual, options) {
 		return this.waitTill(function() {
-			return document.body.find(actual)
+			return document.body.find.call(document.documentElement, actual)
 		}, options || "Expected: selector "+actual+" should be in dom")
 	}
 	describe.it.countSelectors = function(actual, expected, options) {
