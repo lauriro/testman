@@ -134,7 +134,7 @@
 				} else if (rule.selectorText) {
 					rule.selectorText.split(/\s*,\s*/).each(function(sel) {
 						sel = sel.replace(cleanSelectorRe, "")
-						if (ignoreSelectors && ignoreSelectors.indexOf(sel) > -1) {
+						if (!sel || ignoreSelectors && ignoreSelectors.indexOf(sel) > -1) {
 							return
 						}
 						selectors[sel] = selectors[sel] || {files: [], count: 0}
