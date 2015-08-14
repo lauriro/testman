@@ -9,6 +9,13 @@
 		return this
 	}
 
+	describe.it.resizeTo = function(width, height) {
+		document.documentElement.style.width = width
+		document.documentElement.style.height = height
+		M.emit.call(window, "resize")
+		return this
+	}
+
 	describe.it.waitTill = function(actual, options) {
 		var result
 		, count = 30
