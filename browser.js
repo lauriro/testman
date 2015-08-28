@@ -108,32 +108,39 @@
 	}
 	describe.it.collectCssUsage = function(options) {
 		options = options || {}
-		var styleSheet
-		, selectors = describe.GLOBAL.selectorsUsage = {}
+		var selectors = describe.GLOBAL.selectorsUsage = {}
 		, styleSheets = document.styleSheets
 		, styleSheetsCount = styleSheets.length
 		, ignoreFiles = options.ignoreFiles
 		, ignoreSelectors = options.ignoreSelectors
 		, cleanSelectorRe = /:(?:focus|active|empty|hover|:after|:before|:selection)\b/g
 
-		while (styleSheet = styleSheets[--styleSheetsCount]) {
-			parseStyleSheet(styleSheet)
+		while (styleSheetsCount--) {
+			parseStyleSheet(styleSheets[styleSheetsCount])
 		}
 
 		function parseStyleSheet(styleSheet) {
 			var rule
-			, rules = styleSheet.rules || styleSheet.cssRules
+			, rules = styleSheet.cssRules || styleSheet.rules
 			, rulesCount = rules.length
 			, fileName = relative(location.href.replace(/\/[^\/]*$/, ""), styleSheet.href||"")
 
 			if (ignoreFiles && ignoreFiles.indexOf(fileName) > -1) return
 
-			while (rule = rules[--rulesCount]) {
+			// IE 8
+			if (styleSheet.imports) {
+				for (var i = styleSheet.imports.length; i--; ) {
+					parseStyleSheet(styleSheet.imports[i])
+				}
+			}
+
+			while (rulesCount--) {
+				rule = rules[rulesCount]
 				if (rule.styleSheet) {
 					parseStyleSheet(rule.styleSheet)
 				} else if (rule.selectorText) {
 					rule.selectorText.split(/\s*,\s*/).each(function(sel) {
-						sel = sel.replace(cleanSelectorRe, "")
+						sel = sel.replace(cleanSelectorRe, "").toLowerCase()
 						if (!sel || ignoreSelectors && ignoreSelectors.indexOf(sel) > -1) {
 							return
 						}
