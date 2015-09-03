@@ -123,7 +123,12 @@
 			var rule
 			, rules = styleSheet.cssRules || styleSheet.rules
 			, rulesCount = rules.length
-			, fileName = relative(location.href.replace(/\/[^\/]*$/, ""), styleSheet.href||"")
+			, fileName = styleSheet.href
+
+			// In IE7 fileName already is relative
+			if (/^\w+:\/\//.test(fileName)) {
+				fileName = relative(location.href.replace(/\/[^\/]*$/, ""), styleSheet.href||"")
+			}
 
 			if (ignoreFiles && ignoreFiles.indexOf(fileName) > -1) return
 
