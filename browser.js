@@ -113,7 +113,7 @@
 		, styleSheetsCount = styleSheets.length
 		, ignoreFiles = options.ignoreFiles
 		, ignoreSelectors = options.ignoreSelectors
-		, cleanSelectorRe = /:(?:focus|active|empty|hover|:after|:before|:selection)\b/g
+		, cleanSelectorRe = /:(?:focus|active|hover|unknown|:[-\w]+)\b/g
 
 		while (styleSheetsCount--) {
 			parseStyleSheet(styleSheets[styleSheetsCount])
