@@ -199,7 +199,7 @@
 				passedAsserts++
 				testCase.passedAsserts++
 			} catch(e) {
-				testCase.failed.push(message + prefix + "\n" + e.stack)
+				testCase.failed.push(message + prefix + (testCase.options.noStack ? "" : "\n" + e.stack))
 			}
 			return testCase
 		},
