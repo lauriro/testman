@@ -30,7 +30,10 @@
 		bold = red = green = reset = ""
 	}
 
+	describe.result = ""
+
 	function print(str) {
+		describe.result += str + "\n"
 		console.log(str)
 	}
 
