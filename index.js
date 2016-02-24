@@ -55,7 +55,9 @@
 		var key, len
 		, actualType = type(actual)
 
-		if (actualType != type(expected)) return false
+		if (actualType != type(expected) || actual.constructor !== expected.constructor) {
+			return false
+		}
 
 		if (actualType == "object") {
 			var keysA = Object.keys(actual)
