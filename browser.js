@@ -172,7 +172,8 @@
 	}
 
 	describe.it.assertCssUsage = function(options) {
-		var assert = this.it("should use all css rules")
+		options = options || {}
+		var assert = this.test(options.message || "it should use all css rules")
 
 		var sel
 		, selectors = describe.GLOBAL.selectorsUsage
