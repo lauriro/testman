@@ -52,6 +52,9 @@
 	function deepEqual(actual, expected) {
 		if (actual === expected) return true
 
+		// null == undefined
+		if (actual == null && actual == expected) return true
+
 		var key, len
 		, actualType = type(actual)
 
