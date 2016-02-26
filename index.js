@@ -83,6 +83,10 @@
 		return "" + actual == "" + expected
 	}
 
+	function msg(actual, expected, message, operator) {
+		return message || actual + operator + expected
+	}
+
 
 	function AssertionError(message, _stackStart) {
 		this.name = "AssertionError"
@@ -205,22 +209,22 @@
 			return testCase
 		},
 		equal: function(actual, expected, message) {
-			return this.ok(actual == expected, message || actual + "==" + expected)
+			return this.ok(actual == expected, msg(actual, expected, message, "=="))
 		},
 		notEqual: function(actual, expected, message) {
-			return this.ok(actual != expected, message || actual + "!=" + expected)
+			return this.ok(actual != expected, msg(actual, expected, message, "!="))
 		},
 		strictEqual: function(actual, expected, message) {
-			return this.ok(actual === expected, message || actual + "===" + expected)
+			return this.ok(actual === expected, msg(actual, expected, message, "==="))
 		},
 		notStrictEqual: function(actual, expected, message) {
-			return this.ok(actual !== expected, message || actual + "!==" + expected)
+			return this.ok(actual !== expected, msg(actual, expected, message, "!=="))
 		},
 		deepEqual: function(actual, expected, message) {
-			return this.ok(deepEqual(actual, expected), message || actual + "deepEqual" + expected)
+			return this.ok(deepEqual(actual, expected), msg(actual, expected, message, "deepEqual"))
 		},
 		notDeepEqual: function(actual, expected, message) {
-			return this.ok(!deepEqual(actual, expected), message || actual + "notDeepEqual" + expected)
+			return this.ok(!deepEqual(actual, expected), msg(actual, expected, message, "notDeepEqual"))
 		},
 		throws: function(fn, message) {
 			var actual = false
@@ -230,7 +234,7 @@
 			} catch(e) {
 				actual = true
 			}
-			return this.ok(actual, message || "throws")
+			return this.ok(actual, msg(actual, expected, message, "throws"))
 		},
 		plan: function(num) {
 			this.planned = num
