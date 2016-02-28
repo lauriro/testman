@@ -30,9 +30,10 @@ describe ( "Testman" ).
 		ok(true, "true is ok").
 		ok(1, "one is ok").
 		ok("s", "string is ok").
-		ok(function(){
+		ok(function() {
 			return true
 		}).
+
 	test ( "it should pass an equal tests", function(assert) {
 		var undef
 		, date1 = new Date(1234567890123)
@@ -43,24 +44,60 @@ describe ( "Testman" ).
 		obj1.circ = obj1
 		obj2.circ = obj2
 
-		assert.equal("a", "a", "a and a should be same")
-		assert.equal(1, 1, "1 and 1 should be same")
-		assert.deepEqual(null, null)
-		assert.deepEqual(undef, undef)
-		assert.deepEqual(null, undef)
-		assert.deepEqual(0, 0)
-		assert.deepEqual(1, 1)
-		assert.deepEqual("", "")
-		assert.deepEqual("a", "a")
-		assert.deepEqual(date1, date2)
-		assert.deepEqual({a: "A", b: "b"}, {a: "A", b: "b"})
-		assert.deepEqual([1, "2", 3], [1, "2", 3])
-		assert.deepEqual(obj1, obj2)
+		assert.equal(null, null)
+		assert.equal(undef, undef)
+		assert.equal(null, undef)
+		assert.equal(0, 0)
+		assert.equal(1, 1)
+		assert.equal("", "")
+		assert.equal("a", "a")
+		assert.equal(date1, date2)
+		assert.equal({a: "A", b: "b"}, {a: "A", b: "b"})
+		assert.equal([1, "2", 3], [1, "2", 3])
+		assert.equal(obj1, obj2)
 	}).
 
-	it ( "should pass an notEqual tests" ).
-		notEqual("a", "b", "a and b should not be same").
-		notEqual(1, 2, "1 and 2 should not be same").
+	test ( "it should pass an notEqual tests", function(assert) {
+		var undef
+		, date1 = new Date(1234567890123)
+		, date2 = new Date(1234567890000)
+		, obj1 = {a:"A"}
+		, obj2 = {a:"B"}
+		, obj3 = {b:"A"}
+		, circ1 = {a:"A"}
+		, circ2 = {a:"A", circ: obj1}
+
+		circ1.circ = circ1
+
+		assert.notEqual("", null)
+		assert.notEqual("", undef)
+		assert.notEqual("", 0)
+		assert.notEqual("", 1)
+		assert.notEqual("", "a")
+		assert.notEqual("", [])
+		assert.notEqual("", date1)
+		assert.notEqual("", obj1)
+
+		assert.notEqual(0, null)
+		assert.notEqual(0, undef)
+		assert.notEqual(0, 1)
+		assert.notEqual(0, "a")
+		assert.notEqual(0, [])
+		assert.notEqual(0, date1)
+		assert.notEqual(0, obj1)
+
+		assert.notEqual(obj1, null)
+		assert.notEqual(obj1, undef)
+		assert.notEqual(obj1, 1)
+		assert.notEqual(obj1, "a")
+		assert.notEqual(obj1, [])
+		assert.notEqual(obj1, date1)
+		assert.notEqual(obj1, obj2)
+		assert.notEqual(obj1, obj3)
+		assert.notEqual(obj2, obj3)
+
+		assert.notEqual(circ1, circ2)
+	}).
 
 	it ( "should pass an anyOf tests" ).
 		anyOf("a", ["a", "b"]).
@@ -85,7 +122,7 @@ describe ( "Testman" ).
 		type( new Date, "date",   "typeof new Date() should be a date").
 	it ( "should run functions" ).
 		run(function(){
-		
+
 		}).
 	it ( "should skip tests", { skip: "manual" } ).
 		ok(false).

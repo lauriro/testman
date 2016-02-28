@@ -55,45 +55,39 @@
 		// null == undefined
 		if (actual == null && actual == expected) return true
 
-		var key, len
+		var key, keysA, keysB, len
 		, actualType = type(actual)
 
-		if (actualType != type(expected) || actual.constructor !== expected.constructor) {
+		if (
+			actualType != type(expected) ||
+			actual.constructor !== expected.constructor ||
+			typeof actual != "object"
+		) {
 			return false
 		}
 
-		if (typeof actual == "object") {
-			if (!circArr) {
-				circArr = []
-			}
-
-			key = circArr.indexOf(actual)
-			if (key > -1) return circArr[key + 1] === expected
-			circArr.push(actual, expected)
+		if (!circArr) {
+			circArr = []
 		}
 
-		if (actualType == "object") {
-			var keysA = Object.keys(actual)
-			, keysB = Object.keys(expected)
-			len = keysA.length
-			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort(), circArr)) return false
-			for (; len--; ) {
-				key = keysA[len]
-				if (!deepEqual(actual[key], expected[key], circArr)) return false
-			}
-			return true
-		}
 
+		key = circArr.indexOf(actual)
+		if (key > -1) return circArr[key + 1] === expected
+		circArr.push(actual, expected)
+
+		keysA = Object.keys(actual)
+		len = keysA.length
 		if (actualType == "array" || actualType == "arguments") {
-			len = actual.length
-			if (len != expected.length) return false
-			for (; len--; ) {
-				if (!deepEqual(actual[len], expected[len], circArr)) return false
-			}
-			return true
+			if (actual.length !== expected.length) return false
+		} else {
+			keysB = Object.keys(expected)
+			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort(), circArr)) return false
 		}
-
-		return "" + actual == "" + expected
+		for (; len--; ) {
+			key = keysA[len]
+			if (!deepEqual(actual[key], expected[key], circArr)) return false
+		}
+		return true
 	}
 
 	function msg(actual, expected, message, operator) {
@@ -222,22 +216,16 @@
 			return testCase
 		},
 		equal: function(actual, expected, message) {
-			return this.ok(actual == expected, msg(actual, expected, message, "=="))
+			return this.ok(deepEqual(actual, expected), msg(actual, expected, message, "=="))
 		},
 		notEqual: function(actual, expected, message) {
-			return this.ok(actual != expected, msg(actual, expected, message, "!="))
+			return this.ok(!deepEqual(actual, expected), msg(actual, expected, message, "!="))
 		},
 		strictEqual: function(actual, expected, message) {
 			return this.ok(actual === expected, msg(actual, expected, message, "==="))
 		},
 		notStrictEqual: function(actual, expected, message) {
 			return this.ok(actual !== expected, msg(actual, expected, message, "!=="))
-		},
-		deepEqual: function(actual, expected, message) {
-			return this.ok(deepEqual(actual, expected), msg(actual, expected, message, "deepEqual"))
-		},
-		notDeepEqual: function(actual, expected, message) {
-			return this.ok(!deepEqual(actual, expected), msg(actual, expected, message, "notDeepEqual"))
 		},
 		throws: function(fn, message) {
 			var actual = false
@@ -289,6 +277,9 @@
 			return this.ok( t === expected, "type should be " + expected + ", got " + t )
 		}
 	}
+
+	TestCase.prototype.deepEqual = TestCase.prototype.equal
+	TestCase.prototype.notDeepEqual = TestCase.prototype.notEqual
 
 	exports.describe = describe.describe = describe
 
