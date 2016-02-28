@@ -61,6 +61,7 @@
 		if (
 			actualType != type(expected) ||
 			actual.constructor !== expected.constructor ||
+			(actualType == "date" && +actual !== +expected) ||
 			typeof actual != "object"
 		) {
 			return false

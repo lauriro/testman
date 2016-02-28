@@ -96,6 +96,13 @@ describe ( "Testman" ).
 		assert.notEqual(obj1, obj3)
 		assert.notEqual(obj2, obj3)
 
+		assert.notEqual(date1, null)
+		assert.notEqual(date1, undef)
+		assert.notEqual(date1, 1)
+		assert.notEqual(date1, "a")
+		assert.notEqual(date1, [])
+		assert.notEqual(date1, date2)
+
 		assert.notEqual(circ1, circ2)
 	}).
 
