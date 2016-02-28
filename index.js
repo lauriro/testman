@@ -49,7 +49,7 @@
 		).toLowerCase()
 	}
 
-	function deepEqual(actual, expected) {
+	function deepEqual(actual, expected, circArr) {
 		if (actual === expected) return true
 
 		// null == undefined
@@ -62,14 +62,24 @@
 			return false
 		}
 
+		if (typeof actual == "object") {
+			if (!circArr) {
+				circArr = []
+			}
+
+			key = circArr.indexOf(actual)
+			if (key > -1) return circArr[key + 1] === expected
+			circArr.push(actual, expected)
+		}
+
 		if (actualType == "object") {
 			var keysA = Object.keys(actual)
 			, keysB = Object.keys(expected)
 			len = keysA.length
-			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort())) return false
+			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort(), circArr)) return false
 			for (; len--; ) {
 				key = keysA[len]
-				if (!deepEqual(actual[key], expected[key])) return false
+				if (!deepEqual(actual[key], expected[key], circArr)) return false
 			}
 			return true
 		}
@@ -78,7 +88,7 @@
 			len = actual.length
 			if (len != expected.length) return false
 			for (; len--; ) {
-				if (!deepEqual(actual[len], expected[len])) return false
+				if (!deepEqual(actual[len], expected[len], circArr)) return false
 			}
 			return true
 		}

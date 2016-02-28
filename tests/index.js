@@ -33,19 +33,34 @@ describe ( "Testman" ).
 		ok(function(){
 			return true
 		}).
-	it ( "should pass an equal tests" ).
-		equal("a", "a", "a and a should be same").
-		equal(1, 1, "1 and 1 should be same").
+	test ( "it should pass an equal tests", function(assert) {
+		var undef
+		, date1 = new Date(1234567890123)
+		, date2 = new Date(1234567890123)
+		, obj1 = {a:"A"}
+		, obj2 = {a:"A"}
+
+		obj1.circ = obj1
+		obj2.circ = obj2
+
+		assert.equal("a", "a", "a and a should be same")
+		assert.equal(1, 1, "1 and 1 should be same")
+		assert.deepEqual(null, null)
+		assert.deepEqual(undef, undef)
+		assert.deepEqual(null, undef)
+		assert.deepEqual(0, 0)
+		assert.deepEqual(1, 1)
+		assert.deepEqual("", "")
+		assert.deepEqual("a", "a")
+		assert.deepEqual(date1, date2)
+		assert.deepEqual({a: "A", b: "b"}, {a: "A", b: "b"})
+		assert.deepEqual([1, "2", 3], [1, "2", 3])
+		assert.deepEqual(obj1, obj2)
+	}).
 
 	it ( "should pass an notEqual tests" ).
 		notEqual("a", "b", "a and b should not be same").
 		notEqual(1, 2, "1 and 2 should not be same").
-
-	it ( "should pass a deepEqual tests" ).
-		deepEqual("a", "a", "a and a should be same").
-		deepEqual(1, 1, "1 and 1 should be same").
-		deepEqual([1, "2", 3], [1, "2", 3]).
-		deepEqual({a: "A", b: "b"}, {a: "A", b: "b"}).
 
 	it ( "should pass an anyOf tests" ).
 		anyOf("a", ["a", "b"]).
