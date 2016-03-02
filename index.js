@@ -92,7 +92,12 @@
 	}
 
 	function msg(actual, expected, message, operator) {
-		return message || actual + operator + expected
+		if (!message) {
+			if (type(actual) == "regexp") actual = actual.toString()
+			else actual = JSON.stringify(actual)
+			message = actual + " " + operator + " " + expected
+		}
+		return message
 	}
 
 
