@@ -91,16 +91,6 @@
 		return true
 	}
 
-	function msg(actual, expected, message, operator) {
-		if (!message) {
-			if (type(actual) == "regexp") actual = actual.toString()
-			else actual = JSON.stringify(actual)
-			message = actual + " " + operator + " " + expected
-		}
-		return message
-	}
-
-
 	function AssertionError(message, _stackStart) {
 		this.name = "AssertionError"
 		this.message = message
@@ -204,34 +194,61 @@
 		return testCase
 	}
 
+	function stringify(item, tmp) {
+		if (item && typeof item == "object") {
+			if (item.constructor == Object) {
+				tmp = Object.keys(item).slice(0, 5).map(function(key) {
+					return key + ":" + stringify(item[key])
+				})
+				return "{" + (item.length > 5 ? tmp + ",..." : tmp) + "}"
+			}
+			if (Array.isArray(item)) {
+				tmp = item.slice(0, 5).map(stringify)
+				return "[" + (item.length > 5 ? tmp + ",..." : tmp) + "]"
+			}
+			if (item instanceof Date) {
+				return item.toJSON()
+			}
+			return toString.call(item).slice(8, -1) + "(" + item.toString() + ")"
+		}
+		return JSON.stringify(item)
+	}
+
 	TestCase.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
-		ok: function(value, message) {
+		ok: function(value, message, _stackStart) {
 			var testCase = this
-			, prefix = " #" + (testCase.passedAsserts + testCase.failed.length+1)
 			totalAsserts++
 			testCase.totalAsserts++
 			try {
-				if (typeof value == "function") value = value.call(testCase)
-				if (!value) throw new AssertionError(message)
+				if (typeof value == "function") {
+					value = value.call(testCase)
+				}
+				if (!value) {
+					if (Array.isArray(message)) {
+						message = stringify(message[0]) + " " + message[1] + " " + stringify(message[2])
+					}
+					message = (message || "Should be truthy") + " #" + (testCase.passedAsserts + testCase.failed.length + 1)
+					throw new AssertionError(message, _stackStart)
+				}
 				passedAsserts++
 				testCase.passedAsserts++
 			} catch(e) {
-				testCase.failed.push(message + prefix + (testCase.options.noStack ? "" : "\n" + e.stack))
+				testCase.failed.push(testCase.options.noStack ? e.message : e.stack)
 			}
 			return testCase
 		},
 		equal: function(actual, expected, message) {
-			return this.ok(deepEqual(actual, expected), msg(actual, expected, message, "=="))
+			return this.ok(deepEqual(actual, expected), message || [actual, "==", expected])
 		},
 		notEqual: function(actual, expected, message) {
-			return this.ok(!deepEqual(actual, expected), msg(actual, expected, message, "!="))
+			return this.ok(!deepEqual(actual, expected), message || [actual, "!=", expected])
 		},
 		strictEqual: function(actual, expected, message) {
-			return this.ok(actual === expected, msg(actual, expected, message, "==="))
+			return this.ok(actual === expected, message || [actual, "===", expected])
 		},
 		notStrictEqual: function(actual, expected, message) {
-			return this.ok(actual !== expected, msg(actual, expected, message, "!=="))
+			return this.ok(actual !== expected, message || [actual, "!==", expected])
 		},
 		throws: function(fn, message) {
 			var actual = false
@@ -241,7 +258,7 @@
 			} catch(e) {
 				actual = true
 			}
-			return this.ok(actual, msg(actual, expected, message, "throws"))
+			return this.ok(actual, message || "throws")
 		},
 		plan: function(num) {
 			this.planned = num
