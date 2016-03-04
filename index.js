@@ -225,10 +225,12 @@
 					value = value.call(testCase)
 				}
 				if (!value) {
-					if (Array.isArray(message)) {
+					if (!message) {
+						message = "Should be truthy: " + stringify(value)
+					} else if (Array.isArray(message)) {
 						message = stringify(message[0]) + " " + message[1] + " " + stringify(message[2])
 					}
-					message = (message || "Should be truthy") + " #" + (testCase.passedAsserts + testCase.failed.length + 1)
+					message = message + " #" + (testCase.passedAsserts + testCase.failed.length + 1)
 					throw new AssertionError(message, _stackStart || ok)
 				}
 				passedAsserts++
