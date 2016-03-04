@@ -216,7 +216,7 @@
 
 	TestCase.prototype = describe.it = describe.assert = {
 		wait: Fn.hold,
-		ok: function(value, message, _stackStart) {
+		ok: function ok(value, message, _stackStart) {
 			var testCase = this
 			totalAsserts++
 			testCase.totalAsserts++
@@ -229,7 +229,7 @@
 						message = stringify(message[0]) + " " + message[1] + " " + stringify(message[2])
 					}
 					message = (message || "Should be truthy") + " #" + (testCase.passedAsserts + testCase.failed.length + 1)
-					throw new AssertionError(message, _stackStart)
+					throw new AssertionError(message, _stackStart || ok)
 				}
 				passedAsserts++
 				testCase.passedAsserts++
@@ -238,19 +238,35 @@
 			}
 			return testCase
 		},
-		equal: function(actual, expected, message) {
-			return this.ok(deepEqual(actual, expected), message || [actual, "==", expected])
+		equal: function equal(actual, expected, message) {
+			return this.ok(
+				deepEqual(actual, expected),
+				message || [actual, "==", expected],
+				equal
+			)
 		},
-		notEqual: function(actual, expected, message) {
-			return this.ok(!deepEqual(actual, expected), message || [actual, "!=", expected])
+		notEqual: function notEqual(actual, expected, message) {
+			return this.ok(
+				!deepEqual(actual, expected),
+				message || [actual, "!=", expected],
+				notEqual
+			)
 		},
-		strictEqual: function(actual, expected, message) {
-			return this.ok(actual === expected, message || [actual, "===", expected])
+		strictEqual: function strictEqual(actual, expected, message) {
+			return this.ok(
+				actual === expected,
+				message || [actual, "===", expected],
+				strictEqual
+			)
 		},
-		notStrictEqual: function(actual, expected, message) {
-			return this.ok(actual !== expected, message || [actual, "!==", expected])
+		notStrictEqual: function notStrictEqual(actual, expected, message) {
+			return this.ok(
+				actual !== expected,
+				message || [actual, "!==", expected],
+				notStrictEqual
+			)
 		},
-		throws: function(fn, message) {
+		throws: function throws(fn, message) {
 			var actual = false
 			, expected = true
 			try {
@@ -258,7 +274,7 @@
 			} catch(e) {
 				actual = true
 			}
-			return this.ok(actual, message || "throws")
+			return this.ok(actual, message || "throws", throws)
 		},
 		plan: function(num) {
 			this.planned = num
@@ -292,12 +308,20 @@
 			fn.call(this)
 			return this
 		},
-		anyOf: function(a, b) {
-			return this.ok( Array.isArray(b) && b.indexOf(a) != -1, "should be one of '" + b + "', got " + a )
+		anyOf: function anyOf(a, b) {
+			return this.ok(
+				Array.isArray(b) && b.indexOf(a) != -1,
+				"should be one of '" + b + "', got " + a,
+				anyOf
+			)
 		},
-		type: function(thing, expected) {
+		type: function assertType(thing, expected) {
 			var t = type(thing)
-			return this.ok( t === expected, "type should be " + expected + ", got " + t )
+			return this.ok(
+				t === expected,
+				"type should be " + expected + ", got " + t,
+				assertType
+			)
 		}
 	}
 
