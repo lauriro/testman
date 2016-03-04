@@ -238,6 +238,13 @@
 			}
 			return testCase
 		},
+		notOk: function notOk(value, message) {
+			return this.ok(
+				!value,
+				message || "Should be falsy: " + stringify(value),
+				notOk
+			)
+		},
 		equal: function equal(actual, expected, message) {
 			return this.ok(
 				deepEqual(actual, expected),

@@ -33,6 +33,7 @@ describe ( "Testman" ).
 		ok(function() {
 			return true
 		}).
+		notOk(false).
 
 	test ( "it should pass an equal tests", function(assert) {
 		var undef
