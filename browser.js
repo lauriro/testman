@@ -27,7 +27,7 @@
 
 		this.ok(function() {
 			return !!result
-		}, options || "Expected: function returns something")
+		}, options || "Function returns something")
 		test()
 
 		return this
@@ -41,12 +41,12 @@
 	describe.it.viewOpen = function(actual, options) {
 		return this.waitTill(function() {
 			return View(actual).open
-		}, options || "Expected: View "+actual+" should be open")
+		}, options || "View "+actual+" should be open")
 	}
 	describe.it.waitSelector = function(actual, options) {
 		return this.waitTill(function() {
 			return document.body.find.call(document.documentElement, actual)
-		}, options || "Expected: selector "+actual+" should be in dom")
+		}, options || "Selector "+actual+" should be in dom")
 	}
 	describe.it.countSelectors = function(actual, expected, options) {
 		this.waitSelector(actual, options)
