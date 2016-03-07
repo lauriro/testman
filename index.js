@@ -140,7 +140,7 @@
 
 			return testCase
 		},
-		done: function() {
+		done: function(next) {
 			if (this.done_) return
 			this.done_ = +new Date()
 
@@ -154,6 +154,8 @@
 			failedCases && print("#" + red + bold + " fail  " + failedCases
 				+ " [" + (totalAsserts - passedAsserts) + "]"
 				+ reset)
+
+			if (typeof next == "function") next()
 			/*
 			* FAILED tests 1, 3, 6
 			* Failed 3/6 tests, 50.00% okay
