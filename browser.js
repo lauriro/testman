@@ -159,15 +159,17 @@
 				}
 			}
 		}
-		View.on("show", function() {
+		View.on("show", count)
+		View.on("ping", count)
+		function count() {
 			var sel
 			, arr = Object.keys(selectors)
 			, len = arr.length
 
 			while (sel = arr[--len]) {
-				selectors[sel].count += document.documentElement.findAll(sel).length
+				selectors[sel].count += document.body.findAll.call(document.documentElement, sel).length
 			}
-		})
+		}
 		return this
 	}
 
