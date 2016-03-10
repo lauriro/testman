@@ -97,7 +97,7 @@
 		if (Error.captureStackTrace) {
 			Error.captureStackTrace(this, _stackStart || AssertionError)
 		} else {
-			this.stack = (new Error()).stack
+			this.stack = this.toString() + "\n" + (new Error()).stack
 		}
 	}
 	AssertionError.prototype = Object.create(Error.prototype)
