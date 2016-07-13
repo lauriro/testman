@@ -34,6 +34,8 @@ describe ( "Testman" ).
 			return true
 		}).
 		notOk(false).
+		notOk(null).
+		notOk().
 
 	test ( "it should pass an equal tests", function(assert) {
 		var undef
@@ -107,6 +109,30 @@ describe ( "Testman" ).
 		assert.notEqual(circ1, circ2)
 	}).
 
+	test ( "it should pass an strictEqual tests", function(assert) {
+		var undef
+
+		assert.strictEqual(null, null)
+		assert.strictEqual(undef, undef)
+		assert.strictEqual(0, 0)
+		assert.strictEqual(1, 1)
+		assert.strictEqual("", "")
+		assert.strictEqual("a", "a")
+	}).
+
+	test ( "it should pass an notStrictEqual tests", function(assert) {
+		var undef
+		, date1 = new Date(1234567890123)
+		, date2 = new Date(1234567890123)
+		, obj1 = {a:"A"}
+		, obj2 = {a:"A"}
+
+		assert.notStrictEqual(null, undef)
+		assert.notStrictEqual(date1, date2)
+		assert.notStrictEqual([1, "2", 3], [1, "2", 3])
+		assert.notStrictEqual(obj1, obj2)
+	}).
+
 	it ( "should pass an anyOf tests" ).
 		anyOf("a", ["a", "b"]).
 		anyOf("a", ["b", "a"]).
@@ -128,6 +154,10 @@ describe ( "Testman" ).
 		type( true,     "boolean" ).
 		type( false,    "boolean" ).
 		type( new Date, "date",   "typeof new Date() should be a date").
+	it ( "should throw" ).
+		throws(function() {
+			throw "E"
+		}).
 	it ( "should run functions" ).
 		run(function(){
 
