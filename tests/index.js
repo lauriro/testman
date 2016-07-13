@@ -1,28 +1,39 @@
-var undef;
+var undef
+, testman = require("../")
 
 
-require("../")
-
-
+testman
 .describe ( "Empty description" )
+
+// testSuite without name
+.describe ()
+// testCase without name
+.test(null, function(assert) {
+	assert.equal(assert.name, "{unnamed test case}")
+	assert.equal(assert.suite.name, "{unnamed test suite}")
+})
 
 .describe ( "Description without asserts" )
 .it ( "should work without asserts" )
 
 .describe ( "test() syntax" )
-.test( "test syntax 1", function(assert) {
-	assert.ok(true)
-	assert.end()
-} )
-.it ( "test it" )
-.test( "test syntax 2", function(assert) {
+.test( "test syntax with plan and assert.end()", function(assert) {
 	assert.plan(1)
 	assert.ok(true)
 	assert.end()
 } )
-.test( "test syntax 3", function(assert) {
+.it ( "test it" )
+.test( "test syntax with plan and without assert.end()", function(assert) {
+	assert.plan(1)
+	assert.ok(true)
+} )
+.test( "test syntax without plan and with assert.end()", function(assert) {
 	assert.ok(true)
 	assert.end()
+} )
+
+.test( "test syntax without plan and assert.end()", function(assert) {
+	assert.ok(true)
 } )
 
 .describe ( "Testman" )
@@ -36,6 +47,9 @@ require("../")
 .notOk(false)
 .notOk(null)
 .notOk()
+.notOk(function() {
+	return false
+})
 
 .test ( "it should pass an equal tests", function(assert) {
 	var undef
@@ -105,6 +119,9 @@ require("../")
 	assert.notEqual(date1, "a")
 	assert.notEqual(date1, [])
 	assert.notEqual(date1, date2)
+
+	assert.notEqual([1], [2])
+	assert.notEqual([1], [1, 2])
 
 	assert.notEqual(circ1, circ2)
 })

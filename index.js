@@ -167,9 +167,10 @@
 
 	function TestCase(name, options, testSuite) {
 		var testCase = this
-		totalCases++
-		testCase.name = totalCases + " - " + (name || "{unnamed test case}")
+		testCase.num = ++totalCases
+		testCase.name = name || "{unnamed test case}"
 		testCase.options = options || {}
+		testCase.suite = testSuite
 		testCase.failed = []
 		testCase.passedAsserts = 0
 		testCase.totalAsserts = 0
@@ -245,6 +246,10 @@
 			return testCase
 		},
 		notOk: function notOk(value, message) {
+			var testCase = this
+			if (typeof value == "function") {
+				value = value.call(testCase)
+			}
 			return this.ok(
 				!value,
 				message || "Should be falsy: " + stringify(value),
@@ -295,26 +300,27 @@
 		},
 		end: function() {
 			var testCase = this
+			, name = testCase.num + " - " + testCase.name
 
 			if (testCase.ended) return
 
 			testCase.ended = new Date()
 
 			if (testCase.options.skip) {
-				return print("ok " + testCase.name + " # skip - " + testCase.options.skip)
+				return print("ok " + name + " # skip - " + testCase.options.skip)
 			}
 
 			if (testCase.planned != void 0) {
 				testCase.equal(testCase.planned, testCase.totalAsserts, null, "planned")
 			}
 
-			testCase.name += " [" + testCase.passedAsserts + "/" + testCase.totalAsserts + "]"
+			name += " [" + testCase.passedAsserts + "/" + testCase.totalAsserts + "]"
 
 			if (testCase.failed.length) {
 				failedCases++
-				print("not ok " + testCase.name + "\n---\n" + testCase.failed.join("\n") + "\n---")
+				print("not ok " + name + "\n---\n" + testCase.failed.join("\n") + "\n---")
 			} else {
-				print("ok " + testCase.name)
+				print("ok " + name)
 			}
 		},
 		run: function(fn) {
