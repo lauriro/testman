@@ -24,7 +24,24 @@
 	, proc = typeof process == "undefined" ? { argv: [] } : process
 	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
+	, v8 = {
+		statusTexts: [
+			"Unknown",
+			"Function is optimized",
+			"Function is not optimized",
+			"Function is always optimized",
+			"Function is never optimized",
+			"Function is maybe deoptimized",
+			"Function is optimized by TurboFan"
+		]
+	}
 
+	try {
+		["GetOptimizationStatus", "OptimizeFunctionOnNextCall"].map(function(name) {
+			v8[name] = Function("fn", "return %" + name+ "(fn)")
+		})
+		v8.isNative = true
+	} catch(e) {}
 
 	if (!color) {
 		bold = red = green = reset = ""
@@ -167,9 +184,9 @@
 
 	function TestCase(name, options, testSuite) {
 		var testCase = this
+		, opts = testCase.options = options || {}
 		testCase.num = ++totalCases
 		testCase.name = name || "{unnamed test case}"
-		testCase.options = options || {}
 		testCase.suite = testSuite
 		testCase.failed = []
 		testCase.passedAsserts = 0
@@ -177,7 +194,9 @@
 
 		testSuite.cases.push( testCase )
 
-		if (testCase.options.skip) {
+		if (
+			opts.skip ||
+			(opts.skip = opts.v8Native && !v8.isNative && "No access to v8 natives") ) {
 			testCase.ok = testCase.equal = testCase.type = testCase.run = This
 		}
 
@@ -282,6 +301,21 @@
 				actual !== expected,
 				message || [actual, "!==", expected],
 				notStrictEqual
+			)
+		},
+		isOptimized: function isOptimized(fn, args, scope) {
+			if (!v8.isNative) {
+				this.options.skip = "No access to v8 natives"
+				return this
+			}
+			fn.apply(scope, args)
+			v8.OptimizeFunctionOnNextCall(fn)
+			fn.apply(scope, args)
+			var status = v8.GetOptimizationStatus(fn)
+			return this.ok(
+				status == 1,
+				v8.statusTexts[status],
+				isOptimized
 			)
 		},
 		throws: function throws(fn, message) {

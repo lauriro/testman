@@ -182,6 +182,9 @@ testman
 .it ( "should skip tests", { skip: "manual" } )
 .ok(false)
 
+.it ( "should test V8 Optimization" )
+.isOptimized(testman.describe)
+
 .describe ( "Async Testman" )
 .it ( "should wait" )
 .run(function(){
