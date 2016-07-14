@@ -7,8 +7,8 @@
 [GitHub repo]: https://github.com/litejs/testman
 
 
-    @version    0.4.0
-    @date       2016-03-14
+    @version    0.5.0
+    @date       2016-07-14
     @stability  2 - Unstable
 
 
