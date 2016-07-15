@@ -312,9 +312,10 @@
 			v8.OptimizeFunctionOnNextCall(fn)
 			fn.apply(scope, args)
 			var status = v8.GetOptimizationStatus(fn)
+			, name = fn.name || "(fn)"
 			return this.ok(
 				status == 1,
-				v8.statusTexts[status],
+				name + ": " + v8.statusTexts[status],
 				isOptimized
 			)
 		},
