@@ -17,12 +17,12 @@
 	, totalAsserts = 0
 	, passedAsserts = 0
 	, toString = Object.prototype.toString
+	, hasOwn = Object.prototype.hasOwnProperty
 	, bold  = '\u001b[1m'
 	, red   = '\u001b[31m'
 	, green = '\u001b[32m'
 	, reset = '\u001b[0m'
 	, proc = typeof process == "undefined" ? { argv: [] } : process
-	, Fn = exports.Fn || require("./lib/functional-lite.js").Fn
 	, color = proc.stdout && proc.stdout.isTTY && proc.argv.indexOf("--no-color") == -1
 	, v8 = {
 		statusTexts: [
@@ -239,7 +239,7 @@
 	}
 
 	TestCase.prototype = describe.it = describe.assert = {
-		wait: Fn.hold,
+		wait: hold,
 		ok: function ok(value, message, _stackStart) {
 			var testCase = this
 			totalAsserts++
@@ -390,6 +390,55 @@
 		return testPoint = testPoint.test(name, next)
 	}
 
+	function wait(fn) {
+		var pending = 1
+		function resume() {
+			if (!--pending && fn) fn.call(this)
+		}
+		resume.wait = function() {
+			pending++
+			return resume
+		}
+		return resume
+	}
+
+	function hold(ignore) {
+		var k
+		, obj = this
+		, hooks = []
+		, hooked = []
+		, _resume = wait(resume)
+		ignore = ignore || obj.syncMethods || []
+
+		for (k in obj) if (typeof obj[k] == "function" && ignore.indexOf(k) == -1) !function(k) {
+			hooked.push(k, hasOwn.call(obj, k) && obj[k])
+			obj[k] = function() {
+				hooks.push(k, arguments)
+				return obj
+			}
+		}(k)
+
+		/**
+		 * `wait` is already in hooked array,
+		 * so override hooked method
+		 * that will be cleared on resume.
+		 */
+		obj.wait = _resume.wait
+
+		return _resume
+
+		function resume() {
+			for (var v, scope = obj, i = hooked.length; i--; i--) {
+				if (hooked[i]) obj[hooked[i-1]] = hooked[i]
+				else delete obj[hooked[i-1]]
+			}
+			// i == -1 from previous loop
+			for (; v = hooks[++i]; ) {
+				scope = scope[v].apply(scope, hooks[++i]) || scope
+			}
+			hooks = hooked = null
+		}
+	}
 }(this)
 
 
