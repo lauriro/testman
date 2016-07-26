@@ -66,28 +66,24 @@
 		).toLowerCase()
 	}
 
-	function deepEqual(actual, expected, circArr) {
-		if (actual === expected) return true
-
-		// null == undefined
-		if (actual == null && actual == expected) return true
+	function deepEqual(actual, expected, strict, _circArr) {
+		if (
+			strict && actual === expected ||
+			!strict && actual == expected ||
+			// null == undefined
+			actual == null && actual == expected
+		) return true
 
 		var key, keysA, keysB, len
 		, actualType = type(actual)
+		, circArr = _circArr || []
 
 		if (
 			actualType != type(expected) ||
 			actual.constructor !== expected.constructor ||
 			(actualType == "date" && +actual !== +expected) ||
 			typeof actual != "object"
-		) {
-			return false
-		}
-
-		if (!circArr) {
-			circArr = []
-		}
-
+		) return false
 
 		key = circArr.indexOf(actual)
 		if (key > -1) return circArr[key + 1] === expected
@@ -99,11 +95,11 @@
 			if (actual.length !== expected.length) return false
 		} else {
 			keysB = Object.keys(expected)
-			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort(), circArr)) return false
+			if (len != keysB.length || !deepEqual(keysA.sort(), keysB.sort(), strict, circArr)) return false
 		}
 		for (; len--; ) {
 			key = keysA[len]
-			if (!deepEqual(actual[key], expected[key], circArr)) return false
+			if (!deepEqual(actual[key], expected[key], strict, circArr)) return false
 		}
 		return true
 	}
@@ -279,14 +275,14 @@
 		},
 		equal: function equal(actual, expected, message) {
 			return this.ok(
-				deepEqual(actual, expected),
+				deepEqual(actual, expected, true),
 				message || [actual, "==", expected],
 				equal
 			)
 		},
 		notEqual: function notEqual(actual, expected, message) {
 			return this.ok(
-				!deepEqual(actual, expected),
+				!deepEqual(actual, expected, true),
 				message || [actual, "!=", expected],
 				notEqual
 			)
