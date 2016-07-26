@@ -13,7 +13,7 @@
 !function(exports) {
 	var doneTick, started
 	, totalCases = 0
-	, failedCases = 0
+	, passedCases = 0
 	, totalAsserts = 0
 	, passedAsserts = 0
 	, toString = Object.prototype.toString
@@ -161,15 +161,17 @@
 			if (this.done_) return
 			this.done_ = +new Date()
 
+			var failed = totalAsserts - passedAsserts
+
 			print("1.." + totalCases)
-			print("#" + (failedCases ? "" : green + bold) + " pass  " + (totalCases - failedCases)
+			print("#" + (failed ? "" : green + bold) + " pass  " + passedCases
 				+ "/" + totalCases
 				+ " [" + passedAsserts + "/" + totalAsserts + "]"
 				+ " in " + (this.done_ - started) + " ms"
 				+ reset)
 
-			failedCases && print("#" + red + bold + " fail  " + failedCases
-				+ " [" + (totalAsserts - passedAsserts) + "]"
+			if (failed) print("#" + red + bold + " fail  " + (totalCases - passedCases)
+				+ " [" + failed + "]"
 				+ reset)
 
 			if (typeof next == "function") next()
@@ -342,6 +344,7 @@
 			testCase.ended = new Date()
 
 			if (testCase.options.skip) {
+				passedCases++
 				return print("ok " + name + " # skip - " + testCase.options.skip)
 			}
 
@@ -352,9 +355,9 @@
 			name += " [" + testCase.passedAsserts + "/" + testCase.totalAsserts + "]"
 
 			if (testCase.failed.length) {
-				failedCases++
 				print("not ok " + name + "\n---\n" + testCase.failed.join("\n") + "\n---")
 			} else {
+				passedCases++
 				print("ok " + name)
 			}
 		},
